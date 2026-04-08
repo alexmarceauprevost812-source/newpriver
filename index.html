@@ -3,795 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nouveau Rivière</title>
+  <title>Nouveau Riviere</title>
   <meta name="description" content="Application travail futuriste avec pluie Matrix" />
-  <style>
-    :root{
-      --bg:#000000;
-      --bg2:#0d0d0d;
-      --card:rgba(15,15,15,0.95);
-      --soft:#181818;
-      --text:#ffffff;
-      --muted:#cfcfcf;
-      --accent:#ff7a00;
-      --accent2:#ff9a2f;
-      --danger:#ff2a2a;
-      --border:rgba(255,255,255,0.08);
-      --radius-xl:28px;
-      --radius-lg:20px;
-      --radius-md:16px;
-      --radius-sm:12px;
-      --shadow:0 16px 48px rgba(0,0,0,0.45);
-      --transition:0.25s ease;
-    }
-
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family:Arial,Helvetica,sans-serif;
-    }
-
-    html,body{
-      min-height:100%;
-      background:var(--bg);
-      color:var(--text);
-    }
-
-    body{
-      overflow-x:hidden;
-      background:linear-gradient(180deg,#000000 0%, #080808 100%);
-    }
-
-    button,input{
-      font:inherit;
-    }
-
-    button{
-      cursor:pointer;
-      border:none;
-      outline:none;
-      transition:transform var(--transition),opacity var(--transition),background var(--transition),border-color var(--transition),box-shadow var(--transition);
-      -webkit-tap-highlight-color:transparent;
-    }
-
-    button:active{
-      transform:scale(0.98);
-    }
-
-    input{
-      width:100%;
-      padding:14px 16px;
-      border-radius:var(--radius-sm);
-      border:1px solid var(--border);
-      background:var(--soft);
-      color:var(--text);
-      outline:none;
-      transition:border-color var(--transition), box-shadow var(--transition);
-    }
-
-    input::placeholder{
-      color:#9a9a9a;
-    }
-
-    input:focus{
-      border-color:var(--accent);
-      box-shadow:0 0 0 3px rgba(255,122,0,0.15);
-    }
-
-    .app{
-      position:relative;
-      min-height:100vh;
-      z-index:1;
-    }
-
-    #matrixCanvas{
-      position:fixed;
-      inset:0;
-      width:100%;
-      height:100%;
-      z-index:0;
-      opacity:0.38;
-      pointer-events:none;
-    }
-
-    .screen{
-      display:none;
-      min-height:100vh;
-      position:relative;
-      z-index:2;
-    }
-
-    .screen.active{
-      display:block;
-    }
-
-    .hidden{
-      display:none !important;
-    }
-
-    .center-wrap{
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
-    }
-
-    .card{
-      width:100%;
-      max-width:520px;
-      background:var(--card);
-      border:1px solid rgba(255,122,0,0.12);
-      border-radius:var(--radius-xl);
-      box-shadow:var(--shadow);
-      padding:24px 18px;
-      backdrop-filter:blur(8px);
-    }
-
-    .title{
-      font-size:clamp(2rem,6vw,3rem);
-      font-weight:800;
-      letter-spacing:0.03em;
-      text-align:center;
-      margin-bottom:8px;
-    }
-
-    .subtitle{
-      text-align:center;
-      color:var(--muted);
-      margin-bottom:22px;
-      line-height:1.5;
-    }
-
-    .primary-btn{
-      min-height:50px;
-      padding:14px 18px;
-      border-radius:var(--radius-md);
-      background:linear-gradient(180deg,var(--accent2) 0%, var(--accent) 100%);
-      color:#fff;
-      font-weight:700;
-      box-shadow:0 10px 24px rgba(255,122,0,0.22);
-    }
-
-    .secondary-btn{
-      min-height:50px;
-      padding:14px 18px;
-      border-radius:var(--radius-md);
-      background:#141414;
-      color:#fff;
-      border:1px solid rgba(255,122,0,0.22);
-      font-weight:700;
-    }
-
-    .text-btn{
-      background:transparent;
-      color:var(--accent);
-      padding:8px 0;
-      text-align:center;
-    }
-
-    .icon-btn{
-      width:44px;
-      height:44px;
-      border-radius:14px;
-      background:#121212;
-      color:#fff;
-      border:1px solid rgba(255,122,0,0.18);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:1.1rem;
-    }
-
-    .stack{
-      display:grid;
-      gap:14px;
-    }
-
-    #introScreen .card{
-      text-align:center;
-      overflow:hidden;
-    }
-
-    .intro-avatar-wrap{
-      display:flex;
-      justify-content:center;
-      margin:18px 0 18px;
-    }
-
-    .intro-avatar{
-      width:180px;
-      height:180px;
-      border-radius:50%;
-      background:linear-gradient(180deg,#121212 0%,#1d1d1d 100%);
-      border:1px solid rgba(255,122,0,0.25);
-      box-shadow:0 0 30px rgba(255,122,0,0.18);
-      position:relative;
-      overflow:hidden;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      animation:floatAvatar 4s ease-in-out infinite;
-    }
-
-    .intro-avatar img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
-
-    .intro-avatar .fallback{
-      font-size:2.3rem;
-      font-weight:800;
-    }
-
-    .eyes{
-      position:absolute;
-      top:76px;
-      left:50%;
-      transform:translateX(-50%);
-      width:74px;
-      display:flex;
-      justify-content:space-between;
-      z-index:2;
-    }
-
-    .eye{
-      width:14px;
-      height:14px;
-      border-radius:50%;
-      background:#fff;
-      box-shadow:0 0 10px rgba(255,255,255,0.6);
-      animation:blinkEyes 2.5s infinite ease-in-out;
-    }
-
-    .intro-message{
-      font-size:clamp(1.6rem,5vw,2.2rem);
-      font-weight:800;
-      min-height:52px;
-      margin-top:8px;
-      color:#ffffff;
-      text-shadow:0 0 18px rgba(255,122,0,0.28);
-    }
-
-    .intro-small{
-      color:var(--muted);
-      margin-top:10px;
-    }
-
-    .hero{
-      min-height:100vh;
-      padding:28px 18px 38px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:24px;
-    }
-
-    .hero .card{
-      max-width:540px;
-      text-align:center;
-    }
-
-    .hero-actions{
-      display:grid;
-      gap:14px;
-      margin-top:14px;
-    }
-
-    .warning-box{
-      margin-top:16px;
-      padding:16px;
-      border-radius:18px;
-      background:rgba(255,42,42,0.1);
-      border:1px solid rgba(255,42,42,0.28);
-      text-align:center;
-    }
-
-    .skull{
-      font-size:3rem;
-      line-height:1;
-      margin-bottom:8px;
-      animation:shake 0.5s ease;
-    }
-
-    .warning-box p{
-      color:#ffd0d0;
-      font-weight:700;
-    }
-
-    .menu-overlay{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.58);
-      z-index:90;
-      backdrop-filter:blur(4px);
-      opacity:0;
-      transition:opacity 0.3s ease;
-      pointer-events:none;
-    }
-
-    .menu-overlay.show{
-      opacity:1;
-      pointer-events:auto;
-    }
-
-    .side-menu{
-      position:fixed;
-      top:0;
-      left:0;
-      width:min(84vw,320px);
-      height:100vh;
-      padding:22px 16px;
-      background:linear-gradient(180deg,#101010 0%,#050505 100%);
-      border-right:1px solid rgba(255,122,0,0.18);
-      box-shadow:14px 0 32px rgba(0,0,0,0.5);
-      z-index:100;
-      transform:translateX(-100%);
-      transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);
-    }
-
-    .side-menu.open{
-      transform:translateX(0);
-    }
-
-    .side-menu-header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:22px;
-      opacity:0;
-      transform:translateX(-20px);
-      transition:opacity 0.3s ease, transform 0.3s ease;
-    }
-
-    .side-menu.open .side-menu-header{
-      opacity:1;
-      transform:translateX(0);
-      transition-delay:0.12s;
-    }
-
-    .side-menu-nav{
-      display:grid;
-      gap:12px;
-      perspective:800px;
-    }
-
-    .menu-link{
-      width:100%;
-      text-align:left;
-      padding:14px 16px;
-      border-radius:var(--radius-md);
-      background:rgba(255,255,255,0.03);
-      color:#fff;
-      border:1px solid rgba(255,255,255,0.05);
-      opacity:0;
-      transform:translateX(-40px) rotateY(35deg) scale(0.85);
-      transform-origin:left center;
-      transition:opacity 0.5s ease, transform 0.5s cubic-bezier(0.2,0.8,0.3,1), background var(--transition), border-color var(--transition), box-shadow var(--transition);
-    }
-
-    .side-menu.open .menu-link:nth-child(1){ opacity:1; transform:translateX(0) rotateY(0deg) scale(1); transition-delay:0.7s; }
-    .side-menu.open .menu-link:nth-child(2){ opacity:1; transform:translateX(0) rotateY(0deg) scale(1); transition-delay:1.5s; }
-    .side-menu.open .menu-link:nth-child(3){ opacity:1; transform:translateX(0) rotateY(0deg) scale(1); transition-delay:2.3s; }
-    .side-menu.open .menu-link:nth-child(4){ opacity:1; transform:translateX(0) rotateY(0deg) scale(1); transition-delay:3.1s; }
-    .side-menu.open .menu-link:nth-child(5){ opacity:1; transform:translateX(0) rotateY(0deg) scale(1); transition-delay:3.9s; }
-    .side-menu.open .menu-link:nth-child(6){ opacity:1; transform:translateX(0) rotateY(0deg) scale(1); transition-delay:4.7s; }
-
-    .menu-link:hover{
-      background:rgba(255,122,0,0.1);
-      border-color:rgba(255,122,0,0.25);
-      box-shadow:0 0 18px rgba(255,122,0,0.15), inset 0 0 8px rgba(255,122,0,0.05);
-      transform:translateX(6px) scale(1.02);
-    }
-
-    .menu-link.danger{
-      color:#ffaaaa;
-    }
-
-    .menu-link.danger:hover{
-      background:rgba(255,42,42,0.1);
-      border-color:rgba(255,42,42,0.25);
-    }
-
-    #chatScreen{
-      padding:0;
-    }
-
-    .chat-layout{
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
-    }
-
-    .chat-header{
-      position:sticky;
-      top:0;
-      z-index:20;
-      display:grid;
-      grid-template-columns:auto 1fr auto;
-      align-items:center;
-      gap:12px;
-      padding:12px 14px;
-      background:rgba(8,8,8,0.95);
-      border-bottom:1px solid rgba(255,122,0,0.08);
-      backdrop-filter:blur(10px);
-    }
-
-    .chat-header-left,
-    .chat-header-right{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-
-    .chat-header-center{
-      text-align:center;
-    }
-
-    .mini-avatar{
-      width:38px;
-      height:38px;
-      border-radius:12px;
-      background:#141414;
-      border:1px solid rgba(255,122,0,0.2);
-      overflow:hidden;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:700;
-    }
-
-    .mini-avatar img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
-
-    .clock{
-      min-width:74px;
-      text-align:center;
-      padding:10px 12px;
-      border-radius:12px;
-      background:#101010;
-      border:1px solid rgba(255,122,0,0.18);
-      font-weight:700;
-      box-shadow:0 0 18px rgba(255,122,0,0.08);
-    }
-
-    .chat-main{
-      flex:1;
-      display:grid;
-      grid-template-columns:72px 1fr;
-      min-height:0;
-    }
-
-    .ai-side{
-      display:flex;
-      justify-content:center;
-      align-items:flex-start;
-      padding-top:18px;
-    }
-
-    .ai-orb{
-      width:54px;
-      height:54px;
-      border-radius:50%;
-      background:linear-gradient(180deg,#1a1a1a 0%,#101010 100%);
-      border:1px solid rgba(255,122,0,0.28);
-      box-shadow:0 0 22px rgba(255,122,0,0.18);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
-      transition:all 0.25s ease;
-    }
-
-    .ai-orb img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-      border-radius:50%;
-    }
-
-    .chat-zone{
-      min-width:0;
-      padding:18px 14px 8px 0;
-    }
-
-    .chat-messages{
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      max-height:calc(100vh - 168px);
-      overflow-y:auto;
-      padding-right:4px;
-    }
-
-    .chat-messages::-webkit-scrollbar{
-      width:6px;
-    }
-
-    .chat-messages::-webkit-scrollbar-thumb{
-      background:rgba(255,122,0,0.24);
-      border-radius:999px;
-    }
-
-    .message{
-      display:flex;
-      width:100%;
-    }
-
-    .message-ai{
-      justify-content:flex-start;
-    }
-
-    .message-user{
-      justify-content:flex-end;
-    }
-
-    .message-bubble{
-      max-width:86%;
-      padding:14px 16px;
-      border-radius:18px;
-      line-height:1.5;
-      word-break:break-word;
-      font-size:0.98rem;
-    }
-
-    .message-ai .message-bubble{
-      background:#171717;
-      border:1px solid rgba(255,122,0,0.12);
-      color:#fff;
-    }
-
-    .message-user .message-bubble{
-      background:linear-gradient(180deg,var(--accent2) 0%, var(--accent) 100%);
-      color:#fff;
-    }
-
-    .chat-footer{
-      position:sticky;
-      bottom:0;
-      padding:12px 12px calc(12px + env(safe-area-inset-bottom, 0px));
-      background:rgba(8,8,8,0.97);
-      border-top:1px solid rgba(255,122,0,0.08);
-      display:grid;
-      gap:10px;
-    }
-
-    .chat-input-bar{
-      display:grid;
-      grid-template-columns:1fr auto;
-      gap:10px;
-      align-items:center;
-    }
-
-    .panel-screen{
-      min-height:100vh;
-      padding:24px 16px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-
-    .list-grid{
-      display:grid;
-      gap:14px;
-    }
-
-    .item-box,
-    .settings-group{
-      background:rgba(255,255,255,0.03);
-      border:1px solid rgba(255,122,0,0.08);
-      border-radius:18px;
-      padding:16px;
-    }
-
-    .item-box h3,
-    .settings-group h3{
-      margin-bottom:8px;
-    }
-
-    .item-box p,
-    .settings-group p{
-      color:var(--muted);
-      line-height:1.5;
-    }
-
-    .panel-actions{
-      display:grid;
-      gap:12px;
-      margin-top:22px;
-    }
-
-    .theme-options{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px;
-      margin-top:12px;
-    }
-
-    .color-option{
-      min-height:46px;
-      padding:12px 14px;
-      border-radius:14px;
-      background:#141414;
-      color:#fff;
-      border:1px solid rgba(255,122,0,0.18);
-      font-weight:700;
-    }
-
-    .color-option.active{
-      background:rgba(255,122,0,0.14);
-      border-color:rgba(255,122,0,0.55);
-      box-shadow:0 0 0 1px rgba(255,122,0,0.2);
-    }
-
-    .avatar-preview-wrap{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      margin-top:12px;
-      flex-wrap:wrap;
-    }
-
-    .avatar-preview{
-      width:74px;
-      height:74px;
-      border-radius:50%;
-      overflow:hidden;
-      background:#121212;
-      border:1px solid rgba(255,122,0,0.22);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:800;
-    }
-
-    .avatar-preview img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
-
-    .file-label{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-height:46px;
-      padding:12px 14px;
-      border-radius:14px;
-      background:#141414;
-      color:#fff;
-      border:1px solid rgba(255,122,0,0.22);
-      font-weight:700;
-      cursor:pointer;
-    }
-
-    .file-input{
-      display:none;
-    }
-
-    .theme-noir{
-      --bg:#000000;
-      --bg2:#0d0d0d;
-      --card:rgba(15,15,15,0.95);
-      --soft:#181818;
-      --text:#ffffff;
-      --muted:#cfcfcf;
-      --accent:#ff7a00;
-      --accent2:#ff9a2f;
-    }
-
-    .theme-blanc{
-      --bg:#f3f3f3;
-      --bg2:#ffffff;
-      --card:rgba(255,255,255,0.96);
-      --soft:#eeeeee;
-      --text:#111111;
-      --muted:#4d4d4d;
-      --accent:#111111;
-      --accent2:#2f2f2f;
-      --border:rgba(0,0,0,0.08);
-    }
-
-    .theme-orange{
-      --bg:#140800;
-      --bg2:#201105;
-      --card:rgba(34,18,8,0.95);
-      --soft:#2c190a;
-      --text:#ffffff;
-      --muted:#efd5bb;
-      --accent:#ff7a00;
-      --accent2:#ff9f3a;
-    }
-
-    .theme-bleu{
-      --bg:#07111f;
-      --bg2:#10203b;
-      --card:rgba(15,30,54,0.95);
-      --soft:#173255;
-      --text:#ffffff;
-      --muted:#c6d8ec;
-      --accent:#1da6ff;
-      --accent2:#4ab8ff;
-    }
-
-    .theme-rouge{
-      --bg:#160607;
-      --bg2:#250d10;
-      --card:rgba(41,14,17,0.95);
-      --soft:#36171a;
-      --text:#ffffff;
-      --muted:#f1cccc;
-      --accent:#ff3b30;
-      --accent2:#ff5c54;
-    }
-
-    .theme-vert{
-      --bg:#041108;
-      --bg2:#0b1d12;
-      --card:rgba(14,31,20,0.95);
-      --soft:#173822;
-      --text:#ffffff;
-      --muted:#cae8d2;
-      --accent:#18c964;
-      --accent2:#3ad97f;
-    }
-
-    @keyframes pulseGlow{
-      0%,100%{transform:scale(1);opacity:0.9}
-      50%{transform:scale(1.08);opacity:1}
-    }
-
-    @keyframes floatAvatar{
-      0%,100%{transform:translateY(0)}
-      50%{transform:translateY(-10px)}
-    }
-
-    @keyframes blinkEyes{
-      0%,42%,100%{
-        transform:scaleY(1);
-        background:#ffffff;
-        box-shadow:0 0 12px rgba(255,255,255,0.6);
-      }
-      45%{transform:scaleY(0.2)}
-      55%{
-        background:#ff3b30;
-        box-shadow:0 0 14px rgba(255,59,48,0.75);
-      }
-    }
-
-    @keyframes shake{
-      0%,100%{transform:translateX(0)}
-      20%{transform:translateX(-6px)}
-      40%{transform:translateX(6px)}
-      60%{transform:translateX(-4px)}
-      80%{transform:translateX(4px)}
-    }
-
-    @media (min-width:768px){
-      .theme-options{
-        grid-template-columns:repeat(3,minmax(0,1fr));
-      }
-
-      .chat-main{
-        grid-template-columns:88px 1fr;
-      }
-
-      .ai-orb{
-        width:62px;
-        height:62px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <canvas id="matrixCanvas"></canvas>
@@ -802,7 +16,7 @@
     <aside id="sideMenu" class="side-menu hidden">
       <div class="side-menu-header">
         <h2>Menu</h2>
-        <button id="closeMenuBtn" class="icon-btn" type="button">✕</button>
+        <button id="closeMenuBtn" class="icon-btn" type="button">&#10005;</button>
       </div>
 
       <nav class="side-menu-nav">
@@ -810,15 +24,16 @@
         <button class="menu-link" type="button" data-screen="chatScreen">Entrer</button>
         <button class="menu-link" type="button" data-screen="historyScreen">Historique</button>
         <button class="menu-link" type="button" data-screen="projectsScreen">Travail</button>
-        <button class="menu-link" type="button" data-screen="settingsScreen">Paramètres</button>
-        <button class="menu-link danger" type="button" id="logoutBtn">Déconnexion</button>
+        <button class="menu-link" type="button" data-screen="settingsScreen">Parametres</button>
+        <button class="menu-link danger" type="button" id="logoutBtn">Deconnexion</button>
       </nav>
     </aside>
 
+    <!-- INTRO -->
     <section id="introScreen" class="screen active">
       <div class="center-wrap">
         <div class="card">
-          <h1 class="title">Nouveau Rivière</h1>
+          <h1 class="title">Nouveau Riviere</h1>
           <p class="subtitle">Application travail personnelle et futuriste</p>
 
           <div class="intro-avatar-wrap">
@@ -837,10 +52,11 @@
       </div>
     </section>
 
+    <!-- ACCUEIL -->
     <section id="homeScreen" class="screen">
       <div class="hero">
         <div class="card">
-          <h1 class="title">Nouveau Rivière</h1>
+          <h1 class="title">Nouveau Riviere</h1>
           <p class="subtitle">Assistant intelligent futuriste</p>
 
           <div class="intro-avatar-wrap">
@@ -865,6 +81,7 @@
       </div>
     </section>
 
+    <!-- CONNEXION -->
     <section id="loginScreen" class="screen">
       <div class="center-wrap">
         <div class="card">
@@ -882,23 +99,24 @@
           </form>
 
           <div id="loginErrorBox" class="warning-box hidden">
-            <div class="skull">☠️</div>
+            <div class="skull">&#9760;</div>
             <p>Nom utilisateur ou mot de passe invalide.</p>
           </div>
 
           <div class="stack" style="margin-top:18px;">
-            <button id="loginToSignupBtn" class="text-btn" type="button">Créer un compte</button>
+            <button id="loginToSignupBtn" class="text-btn" type="button">Creer un compte</button>
             <button id="loginBackHomeBtn" class="text-btn" type="button">Retour</button>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- INSCRIPTION -->
     <section id="signupScreen" class="screen">
       <div class="center-wrap">
         <div class="card">
           <h2 style="font-size:1.8rem;margin-bottom:8px;">Inscription</h2>
-          <p class="subtitle" style="text-align:left;">Crée ton accès à Nouveau Rivière</p>
+          <p class="subtitle" style="text-align:left;">Cree ton acces a Nouveau Riviere</p>
 
           <form id="signupForm" class="stack">
             <label for="signupName">Nom</label>
@@ -908,32 +126,33 @@
             <input id="signupEmail" type="email" placeholder="Entre ton email" />
 
             <label for="signupPassword">Mot de passe</label>
-            <input id="signupPassword" type="password" placeholder="Crée ton mot de passe" />
+            <input id="signupPassword" type="password" placeholder="Cree ton mot de passe" />
 
             <label for="signupConfirmPassword">Confirmer le mot de passe</label>
             <input id="signupConfirmPassword" type="password" placeholder="Confirme ton mot de passe" />
 
-            <button class="primary-btn" type="submit">Créer mon compte</button>
+            <button class="primary-btn" type="submit">Creer mon compte</button>
           </form>
 
           <div class="stack" style="margin-top:18px;">
-            <button id="signupToLoginBtn" class="text-btn" type="button">Déjà un compte ? Connecte-toi</button>
+            <button id="signupToLoginBtn" class="text-btn" type="button">Deja un compte ? Connecte-toi</button>
             <button id="signupBackHomeBtn" class="text-btn" type="button">Retour</button>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- CHAT -->
     <section id="chatScreen" class="screen">
       <div class="chat-layout">
         <header class="chat-header">
           <div class="chat-header-left">
-            <button id="openMenuBtn" class="icon-btn" type="button">☰</button>
+            <button id="openMenuBtn" class="icon-btn" type="button">&#9776;</button>
             <div class="mini-avatar" id="miniAvatar">IA</div>
           </div>
 
           <div class="chat-header-center">
-            <h2>Nouveau Rivière</h2>
+            <h2>Nouveau Riviere</h2>
           </div>
 
           <div class="chat-header-right">
@@ -949,7 +168,7 @@
           <section class="chat-zone">
             <div id="chatMessages" class="chat-messages">
               <div class="message message-ai">
-                <div class="message-bubble">Bonjour Alex. Je suis prêt.</div>
+                <div class="message-bubble">Bonjour Alex. Je suis pret.</div>
               </div>
             </div>
           </section>
@@ -959,13 +178,14 @@
           <button id="newChatBtn" class="secondary-btn" type="button">Nouveau chat</button>
 
           <form id="chatForm" class="chat-input-bar">
-            <input id="chatInput" type="text" placeholder="Écris ton message..." autocomplete="off" />
+            <input id="chatInput" type="text" placeholder="Ecris ton message..." autocomplete="off" />
             <button class="primary-btn" type="submit">Envoyer</button>
           </form>
         </footer>
       </div>
     </section>
 
+    <!-- HISTORIQUE -->
     <section id="historyScreen" class="screen">
       <div class="panel-screen">
         <div class="card">
@@ -975,11 +195,11 @@
           <div class="list-grid">
             <div class="item-box">
               <h3>Conversation 1</h3>
-              <p>Dernier message aperçu...</p>
+              <p>Dernier message apercu...</p>
             </div>
             <div class="item-box">
               <h3>Conversation 2</h3>
-              <p>Dernier message aperçu...</p>
+              <p>Dernier message apercu...</p>
             </div>
           </div>
 
@@ -991,11 +211,12 @@
       </div>
     </section>
 
+    <!-- TRAVAIL / PROJETS -->
     <section id="projectsScreen" class="screen">
       <div class="panel-screen">
         <div class="card">
           <h2 style="font-size:1.8rem;margin-bottom:8px;">Travail</h2>
-          <p class="subtitle" style="text-align:left;">Organise tes tâches, idées et projets.</p>
+          <p class="subtitle" style="text-align:left;">Organise tes taches, idees et projets.</p>
 
           <div class="list-grid">
             <div class="item-box">
@@ -1007,7 +228,7 @@
               <p>Description rapide du projet.</p>
             </div>
             <div class="item-box">
-              <h3>+ Créer</h3>
+              <h3>+ Creer</h3>
               <p>Ajouter un nouveau projet.</p>
             </div>
           </div>
@@ -1019,15 +240,16 @@
       </div>
     </section>
 
+    <!-- PARAMETRES -->
     <section id="settingsScreen" class="screen">
       <div class="panel-screen">
         <div class="card">
-          <h2 style="font-size:1.8rem;margin-bottom:8px;">Paramètres</h2>
+          <h2 style="font-size:1.8rem;margin-bottom:8px;">Parametres</h2>
           <p class="subtitle" style="text-align:left;">Personnalise ton application.</p>
 
           <div class="list-grid">
             <section class="settings-group">
-              <h3>Thème</h3>
+              <h3>Theme</h3>
               <div class="theme-options">
                 <button class="color-option active" type="button" data-theme="noir">Noir</button>
                 <button class="color-option" type="button" data-theme="blanc">Blanc</button>
@@ -1044,14 +266,14 @@
 
               <div class="avatar-preview-wrap">
                 <div class="avatar-preview" id="settingsAvatarPreview">IA</div>
-                <label class="file-label" for="avatarUpload">Télécharger avatar</label>
+                <label class="file-label" for="avatarUpload">Telecharger avatar</label>
                 <input id="avatarUpload" class="file-input" type="file" accept="image/*" />
               </div>
             </section>
 
             <section class="settings-group">
               <h3>Effets</h3>
-              <p>La pluie Matrix reste toujours affichée à l’écran.</p>
+              <p>La pluie Matrix reste toujours affichee a l'ecran.</p>
             </section>
           </div>
 
@@ -1064,519 +286,6 @@
     </section>
   </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const app = document.getElementById("app");
-      const screens = document.querySelectorAll(".screen");
-      const menuOverlay = document.getElementById("menuOverlay");
-      const sideMenu = document.getElementById("sideMenu");
-      const clockDisplay = document.getElementById("clockDisplay");
-      const chatMessages = document.getElementById("chatMessages");
-      const chatForm = document.getElementById("chatForm");
-      const chatInput = document.getElementById("chatInput");
-      const aiOrb = document.getElementById("aiOrb");
-
-      const enterBtn = document.getElementById("enterBtn");
-      const goLoginBtn = document.getElementById("goLoginBtn");
-      const goSignupBtn = document.getElementById("goSignupBtn");
-      const loginToSignupBtn = document.getElementById("loginToSignupBtn");
-      const loginBackHomeBtn = document.getElementById("loginBackHomeBtn");
-      const signupToLoginBtn = document.getElementById("signupToLoginBtn");
-      const signupBackHomeBtn = document.getElementById("signupBackHomeBtn");
-      const openMenuBtn = document.getElementById("openMenuBtn");
-      const closeMenuBtn = document.getElementById("closeMenuBtn");
-      const newChatBtn = document.getElementById("newChatBtn");
-      const saveSettingsBtn = document.getElementById("saveSettingsBtn");
-      const logoutBtn = document.getElementById("logoutBtn");
-
-      const loginForm = document.getElementById("loginForm");
-      const signupForm = document.getElementById("signupForm");
-      const loginErrorBox = document.getElementById("loginErrorBox");
-      const loginUsername = document.getElementById("loginUsername");
-      const loginPassword = document.getElementById("loginPassword");
-
-      const colorOptions = document.querySelectorAll(".color-option");
-      const screenButtons = document.querySelectorAll("[data-screen]");
-      const menuLinks = document.querySelectorAll(".menu-link");
-
-      const avatarUpload = document.getElementById("avatarUpload");
-      const settingsAvatarPreview = document.getElementById("settingsAvatarPreview");
-      const introAvatar = document.getElementById("introAvatar");
-      const homeAvatar = document.getElementById("homeAvatar");
-      const miniAvatar = document.getElementById("miniAvatar");
-      const introMessage = document.getElementById("introMessage");
-
-      let selectedTheme = localStorage.getItem("nr_theme") || "noir";
-      let avatarData = localStorage.getItem("nr_avatar") || "";
-
-      function showScreen(screenId) {
-        screens.forEach((screen) => screen.classList.remove("active"));
-        const target = document.getElementById(screenId);
-        if (target) target.classList.add("active");
-        closeMenu();
-
-        if (screenId === "chatScreen" && chatInput) {
-          setTimeout(() => chatInput.focus(), 120);
-        }
-      }
-
-      function openMenu() {
-        matrixBurst = true;
-        canvas.style.opacity = "0.7";
-        canvas.style.transition = "opacity 0.5s ease";
-
-        sideMenu.classList.remove("hidden");
-        menuOverlay.classList.remove("hidden");
-
-        requestAnimationFrame(() => {
-          sideMenu.classList.add("open");
-          menuOverlay.classList.add("show");
-        });
-
-        setTimeout(() => {
-          matrixBurst = false;
-          canvas.style.opacity = "0.38";
-        }, 5000);
-      }
-
-      function closeMenu() {
-        sideMenu.classList.remove("open");
-        menuOverlay.classList.remove("show");
-        matrixBurst = false;
-        canvas.style.opacity = "0.38";
-        setTimeout(() => {
-          sideMenu.classList.add("hidden");
-          menuOverlay.classList.add("hidden");
-        }, 400);
-      }
-
-      function updateClock() {
-        const now = new Date();
-        const hours = String(now.getHours()).padStart(2, "0");
-        const minutes = String(now.getMinutes()).padStart(2, "0");
-        if (clockDisplay) {
-          clockDisplay.textContent = hours + ":" + minutes;
-        }
-      }
-
-      function createMessageElement(text, type) {
-        const message = document.createElement("div");
-        message.className = "message message-" + type;
-
-        const bubble = document.createElement("div");
-        bubble.className = "message-bubble";
-        bubble.textContent = text;
-
-        message.appendChild(bubble);
-        return message;
-      }
-
-      function scrollMessagesToBottom() {
-        if (!chatMessages) return;
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-
-      function animateAiOrb() {
-        if (!aiOrb) return;
-        aiOrb.style.transform = "scale(1.08)";
-        aiOrb.style.boxShadow = "0 0 30px rgba(255, 122, 0, 0.38)";
-        setTimeout(() => {
-          aiOrb.style.transform = "scale(1)";
-          aiOrb.style.boxShadow = "0 0 22px rgba(255, 122, 0, 0.18)";
-        }, 260);
-      }
-
-      function addMessage(text, type) {
-        if (!text.trim()) return;
-        chatMessages.appendChild(createMessageElement(text, type));
-        scrollMessagesToBottom();
-      }
-
-      function getDemoResponse(userText) {
-        const text = userText.toLowerCase().trim();
-
-        const rules = [
-          {
-            keywords: ["bonjour", "salut", "allo", "hello"],
-            replies: [
-              "Salut Alex 👋 Je suis prêt à t'aider.",
-              "Bonjour Alex. Que veux-tu faire aujourd'hui ?",
-              "Salut Alex, ton assistant travail est en ligne."
-            ]
-          },
-          {
-            keywords: ["ça va", "ca va", "comment vas", "tu vas bien"],
-            replies: [
-              "Oui Alex, je vais bien et je suis prêt à travailler avec toi.",
-              "Je suis opérationnel Alex.",
-              "Tout est prêt de mon côté."
-            ]
-          },
-          {
-            keywords: ["travail", "job", "projet", "tâche", "tache", "mission"],
-            replies: [
-              "On peut organiser ton travail, tes projets et tes idées ici.",
-              "Je peux t'aider à structurer un projet étape par étape.",
-              "Dis-moi ton objectif de travail et je t'aide à le découper."
-            ]
-          },
-          {
-            keywords: ["code", "coder", "html", "css", "javascript", "js"],
-            replies: [
-              "Je peux t'aider à écrire du code HTML, CSS et JavaScript.",
-              "On peut corriger ton code ou construire une nouvelle base propre.",
-              "Dis-moi ce que tu veux coder et je te guide."
-            ]
-          },
-          {
-            keywords: ["avatar", "photo", "image", "profil"],
-            replies: [
-              "Tu peux changer ton avatar dans les paramètres quand tu veux.",
-              "Va dans Paramètres pour télécharger une nouvelle image.",
-              "L'avatar peut être mis à jour localement depuis ton appareil."
-            ]
-          },
-          {
-            keywords: ["matrix", "pluie", "effet", "animation"],
-            replies: [
-              "La pluie Matrix reste active en arrière-plan de l'application.",
-              "L'effet Matrix tourne déjà sur l'écran.",
-              "On peut renforcer l'effet Matrix si tu veux une version plus intense."
-            ]
-          },
-          {
-            keywords: ["heure", "temps", "clock"],
-            replies: [
-              "L'heure s'affiche en haut à droite dans l'application.",
-              "Le système met l'heure à jour automatiquement.",
-              "L'horloge fonctionne en direct."
-            ]
-          },
-          {
-            keywords: ["paramètre", "parametres", "paramètres", "réglage", "reglage", "theme", "thème", "couleur"],
-            replies: [
-              "Dans les paramètres, tu peux changer le thème et l'avatar.",
-              "Les couleurs disponibles sont noir, blanc, orange, bleu, rouge et vert.",
-              "Le thème principal reste noir avec texte blanc et accent orange."
-            ]
-          },
-          {
-            keywords: ["connexion", "connecter", "login", "mot de passe", "utilisateur"],
-            replies: [
-              "La connexion locale vérifie actuellement le nom utilisateur et le mot de passe.",
-              "Si les identifiants sont faux, l'application affiche une tête de mort et retourne à l'accueil.",
-              "On peut renforcer le système de connexion plus tard."
-            ]
-          },
-          {
-            keywords: ["alex"],
-            replies: [
-              "Oui Alex, je suis là.",
-              "Bienvenue Alex. Que veux-tu faire maintenant ?",
-              "Je suis prêt à travailler avec toi Alex."
-            ]
-          },
-          {
-            keywords: ["aide", "help", "quoi faire", "menu"],
-            replies: [
-              "Je peux t'aider avec le travail, le code, les projets, les thèmes et l'organisation.",
-              "Tu peux utiliser le menu pour accéder au travail, à l'historique et aux paramètres.",
-              "Demande-moi par exemple : aide projet, aide code, aide thème, aide travail."
-            ]
-          }
-        ];
-
-        for (const rule of rules) {
-          if (rule.keywords.some((keyword) => text.includes(keyword))) {
-            return rule.replies[Math.floor(Math.random() * rule.replies.length)];
-          }
-        }
-
-        if (text.length < 3) {
-          return "Écris-moi une question un peu plus complète, Alex.";
-        }
-
-        if (text.endsWith("?")) {
-          return "Bonne question Alex. Donne-moi un peu plus de détails et je vais t'aider.";
-        }
-
-        const genericReplies = [
-          "Message reçu. Explique-moi ton besoin plus en détail et je t'aide.",
-          "Je comprends. Donne-moi plus de contexte pour que je te réponde mieux.",
-          "Je suis prêt à t'aider. Précise ce que tu veux faire exactement.",
-          "On peut travailler là-dessus ensemble. Dis-moi la prochaine étape."
-        ];
-
-        return genericReplies[Math.floor(Math.random() * genericReplies.length)];
-      }
-
-      function handleSendMessage() {
-        const userText = chatInput.value.trim();
-        if (!userText) return;
-
-        addMessage(userText, "user");
-        chatInput.value = "";
-        animateAiOrb();
-
-        setTimeout(() => {
-          addMessage(getDemoResponse(userText), "ai");
-          animateAiOrb();
-        }, 550);
-      }
-
-      function resetChat() {
-        chatMessages.innerHTML = "";
-        chatMessages.appendChild(createMessageElement("Bonjour Alex. Je suis prêt.", "ai"));
-        scrollMessagesToBottom();
-      }
-
-      function applyTheme(themeName) {
-        selectedTheme = themeName;
-
-        app.classList.remove(
-          "theme-noir",
-          "theme-blanc",
-          "theme-orange",
-          "theme-bleu",
-          "theme-rouge",
-          "theme-vert"
-        );
-
-        app.classList.add("theme-" + themeName);
-
-        colorOptions.forEach((button) => {
-          button.classList.toggle("active", button.dataset.theme === themeName);
-        });
-
-        localStorage.setItem("nr_theme", themeName);
-      }
-
-      function setAvatarUI(imageData) {
-        const targets = [settingsAvatarPreview, introAvatar, homeAvatar, miniAvatar, aiOrb];
-
-        targets.forEach((target) => {
-          if (!target) return;
-
-          if (imageData) {
-            target.innerHTML = '<img src="' + imageData + '" alt="Avatar" />';
-          } else {
-            if (target === introAvatar || target === homeAvatar) {
-              target.innerHTML =
-                '<div class="eyes"><div class="eye"></div><div class="eye"></div></div><div class="fallback">IA</div>';
-            } else {
-              target.textContent = "IA";
-            }
-          }
-        });
-      }
-
-      function saveAvatar(file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          avatarData = reader.result;
-          localStorage.setItem("nr_avatar", avatarData);
-          setAvatarUI(avatarData);
-        };
-        reader.readAsDataURL(file);
-      }
-
-      function showLoginError() {
-        loginErrorBox.classList.remove("hidden");
-        setTimeout(() => {
-          loginErrorBox.classList.add("hidden");
-          showScreen("homeScreen");
-        }, 1800);
-      }
-
-      function startIntroSequence() {
-        showScreen("introScreen");
-        introMessage.textContent = "";
-
-        setTimeout(() => {
-          introMessage.textContent = "Salut Alex";
-        }, 5000);
-
-        setTimeout(() => {
-          showScreen("homeScreen");
-        }, 7600);
-      }
-
-      const canvas = document.getElementById("matrixCanvas");
-      const ctx = canvas.getContext("2d");
-
-      function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        initMatrixLayers();
-      }
-
-      const letters = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*<>{}[]";
-
-      const matrixLayers = [];
-
-      function initMatrixLayers() {
-        matrixLayers.length = 0;
-
-        const layerConfigs = [
-          { fontSize: 10, speed: 0.6, opacity: 0.3, color: "0,180,80", reset: 0.985 },
-          { fontSize: 15, speed: 1.0, opacity: 0.6, color: "0,255,100", reset: 0.978 },
-          { fontSize: 22, speed: 1.6, opacity: 1.0, color: "0,255,70",  reset: 0.970 }
-        ];
-
-        for (const cfg of layerConfigs) {
-          const cols = Math.floor(canvas.width / cfg.fontSize);
-          matrixLayers.push({
-            ...cfg,
-            columns: cols,
-            drops: Array.from({ length: cols }, () => Math.random() * -20)
-          });
-        }
-      }
-
-      resizeCanvas();
-      window.addEventListener("resize", resizeCanvas);
-
-      let matrixBurst = false;
-
-      function drawMatrix() {
-        ctx.fillStyle = matrixBurst ? "rgba(0,0,0,0.04)" : "rgba(0,0,0,0.07)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        for (const layer of matrixLayers) {
-          for (let i = 0; i < layer.drops.length; i++) {
-            const char = letters.charAt(Math.floor(Math.random() * letters.length));
-            const x = i * layer.fontSize;
-            const y = layer.drops[i] * layer.fontSize;
-
-            const headGlow = matrixBurst ? 0.95 : 0.8;
-            ctx.font = layer.fontSize + "px monospace";
-
-            if (Math.random() > 0.7) {
-              ctx.shadowBlur = matrixBurst ? 18 : 10;
-              ctx.shadowColor = "rgba(" + layer.color + "," + headGlow + ")";
-              ctx.fillStyle = "rgba(200,255,220," + headGlow + ")";
-            } else {
-              ctx.shadowBlur = matrixBurst ? 8 : 3;
-              ctx.shadowColor = "rgba(" + layer.color + ",0.4)";
-              ctx.fillStyle = "rgba(" + layer.color + "," + layer.opacity + ")";
-            }
-
-            ctx.fillText(char, x, y);
-            ctx.shadowBlur = 0;
-
-            const speed = matrixBurst ? layer.speed * 2.2 : layer.speed;
-            layer.drops[i] += speed;
-
-            const resetThreshold = matrixBurst ? 0.96 : layer.reset;
-            if (layer.drops[i] * layer.fontSize > canvas.height && Math.random() > resetThreshold) {
-              layer.drops[i] = Math.random() * -8;
-            }
-          }
-        }
-
-        if (matrixBurst && Math.random() > 0.92) {
-          ctx.fillStyle = "rgba(0,255,100,0.02)";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
-      }
-
-      setInterval(drawMatrix, 40);
-
-      enterBtn.addEventListener("click", () => showScreen("chatScreen"));
-      goLoginBtn.addEventListener("click", () => showScreen("loginScreen"));
-      goSignupBtn.addEventListener("click", () => showScreen("signupScreen"));
-      loginToSignupBtn.addEventListener("click", () => showScreen("signupScreen"));
-      loginBackHomeBtn.addEventListener("click", () => showScreen("homeScreen"));
-      signupToLoginBtn.addEventListener("click", () => showScreen("loginScreen"));
-      signupBackHomeBtn.addEventListener("click", () => showScreen("homeScreen"));
-
-      openMenuBtn.addEventListener("click", openMenu);
-      closeMenuBtn.addEventListener("click", closeMenu);
-      menuOverlay.addEventListener("click", closeMenu);
-
-      menuLinks.forEach((button) => {
-        button.addEventListener("click", () => {
-          if (button.textContent.trim() === "Entrer") {
-            showScreen("chatScreen");
-            return;
-          }
-          const target = button.dataset.screen;
-          if (target === "chatScreen" && button.textContent.trim() === "Nouveau chat") {
-            resetChat();
-          }
-          if (target) showScreen(target);
-        });
-      });
-
-      screenButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          const target = button.dataset.screen;
-          if (button.textContent.trim() === "Nouveau chat") {
-            resetChat();
-          }
-          if (target) showScreen(target);
-        });
-      });
-
-      logoutBtn.addEventListener("click", () => {
-        closeMenu();
-        showScreen("homeScreen");
-      });
-
-      loginForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-
-        const username = loginUsername.value.trim();
-        const password = loginPassword.value.trim();
-
-        if (username === "alex" && password === "1234") {
-          loginErrorBox.classList.add("hidden");
-          showScreen("chatScreen");
-        } else {
-          showLoginError();
-        }
-      });
-
-      signupForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-        showScreen("chatScreen");
-      });
-
-      chatForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-        handleSendMessage();
-      });
-
-      newChatBtn.addEventListener("click", () => {
-        resetChat();
-        showScreen("chatScreen");
-      });
-
-      colorOptions.forEach((button) => {
-        button.addEventListener("click", () => {
-          const themeName = button.dataset.theme;
-          if (themeName) applyTheme(themeName);
-        });
-      });
-
-      avatarUpload.addEventListener("change", (event) => {
-        const file = event.target.files && event.target.files[0];
-        if (file) {
-          saveAvatar(file);
-        }
-      });
-
-      saveSettingsBtn.addEventListener("click", () => {
-        alert("Paramètres enregistrés");
-      });
-
-      updateClock();
-      setInterval(updateClock, 1000);
-      applyTheme(selectedTheme);
-      setAvatarUI(avatarData);
-      resetChat();
-      startIntroSequence();
-    });
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
