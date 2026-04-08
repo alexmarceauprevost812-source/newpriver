@@ -500,6 +500,113 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(drawMatrix, 40);
 
   // =====================
+  // GESTIONNAIRE DE FICHIERS PRIVES
+  // =====================
+
+  const fileUploadInput = document.getElementById("fileUploadInput");
+  const filesList = document.getElementById("filesList");
+  const filesEmpty = document.getElementById("filesEmpty");
+
+  let storedFiles = JSON.parse(localStorage.getItem("nr_files") || "[]");
+
+  function formatFileSize(bytes) {
+    if (bytes < 1024) return bytes + " o";
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " Ko";
+    return (bytes / 1048576).toFixed(1) + " Mo";
+  }
+
+  function renderFiles() {
+    if (!filesList) return;
+    filesList.innerHTML = "";
+
+    if (storedFiles.length === 0) {
+      if (filesEmpty) filesEmpty.style.display = "";
+      return;
+    }
+
+    if (filesEmpty) filesEmpty.style.display = "none";
+
+    storedFiles.forEach((file, index) => {
+      const item = document.createElement("div");
+      item.className = "file-item";
+
+      item.innerHTML =
+        '<div class="file-item-info">' +
+          '<div class="file-item-name">' + file.name + '</div>' +
+          '<div class="file-item-size">' + formatFileSize(file.size) + '</div>' +
+        '</div>' +
+        '<div class="file-item-actions">' +
+          '<button class="file-btn download" type="button" title="Telecharger" data-index="' + index + '">&#8595;</button>' +
+          '<button class="file-btn delete" type="button" title="Supprimer" data-index="' + index + '">&#10005;</button>' +
+        '</div>';
+
+      filesList.appendChild(item);
+    });
+
+    filesList.querySelectorAll(".file-btn.download").forEach((btn) => {
+      btn.addEventListener("click", () => downloadFile(parseInt(btn.dataset.index)));
+    });
+
+    filesList.querySelectorAll(".file-btn.delete").forEach((btn) => {
+      btn.addEventListener("click", () => deleteFile(parseInt(btn.dataset.index)));
+    });
+  }
+
+  function saveFilesToStorage() {
+    try {
+      localStorage.setItem("nr_files", JSON.stringify(storedFiles));
+    } catch (e) {
+      alert("Espace de stockage plein. Supprime des fichiers.");
+    }
+  }
+
+  function addFiles(fileList) {
+    for (const file of fileList) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        storedFiles.push({
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          data: reader.result,
+          date: new Date().toISOString()
+        });
+        saveFilesToStorage();
+        renderFiles();
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function downloadFile(index) {
+    const file = storedFiles[index];
+    if (!file) return;
+
+    const a = document.createElement("a");
+    a.href = file.data;
+    a.download = file.name;
+    a.click();
+  }
+
+  function deleteFile(index) {
+    if (!confirm("Supprimer ce fichier ?")) return;
+    storedFiles.splice(index, 1);
+    saveFilesToStorage();
+    renderFiles();
+  }
+
+  if (fileUploadInput) {
+    fileUploadInput.addEventListener("change", (event) => {
+      if (event.target.files && event.target.files.length > 0) {
+        addFiles(event.target.files);
+        event.target.value = "";
+      }
+    });
+  }
+
+  renderFiles();
+
+  // =====================
   // EVENT LISTENERS
   // =====================
 

@@ -24,6 +24,7 @@
         <button class="menu-link" type="button" data-screen="chatScreen">Entrer</button>
         <button class="menu-link" type="button" data-screen="historyScreen">Historique</button>
         <button class="menu-link" type="button" data-screen="projectsScreen">Travail</button>
+        <button class="menu-link" type="button" data-screen="filesScreen">Fichiers</button>
         <button class="menu-link" type="button" data-screen="settingsScreen">Parametres</button>
         <button class="menu-link danger" type="button" id="logoutBtn">Deconnexion</button>
       </nav>
@@ -237,6 +238,29 @@
               <p>Ajouter un nouveau projet.</p>
             </div>
           </div>
+
+          <div class="panel-actions">
+            <button class="secondary-btn" type="button" data-screen="chatScreen">Retour au chat</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FICHIERS PRIVES -->
+    <section id="filesScreen" class="screen">
+      <div class="panel-screen">
+        <div class="card">
+          <h2 style="font-size:1.8rem;margin-bottom:8px;">Fichiers Prives</h2>
+          <p class="subtitle" style="text-align:left;">Tes fichiers restent sur ton appareil. Personne d'autre ne peut y acceder.</p>
+
+          <div class="stack">
+            <label class="file-label" for="fileUploadInput" style="width:100%;text-align:center;">Telecharger un fichier</label>
+            <input id="fileUploadInput" class="file-input" type="file" multiple />
+          </div>
+
+          <div id="filesList" class="list-grid" style="margin-top:18px;"></div>
+
+          <p id="filesEmpty" class="subtitle" style="margin-top:18px;">Aucun fichier pour le moment.</p>
 
           <div class="panel-actions">
             <button class="secondary-btn" type="button" data-screen="chatScreen">Retour au chat</button>
