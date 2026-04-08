@@ -92,10 +92,33 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =====================
-  // HORLOGE
+  // HORLOGE MATRIX
   // =====================
 
+  const clockDigits = document.getElementById("clockDigits");
+  const clockRain = document.getElementById("clockRain");
   let lastTimeStr = "";
+  const matrixChars = "アイウエオカキクケコ0123456789#$%&@";
+
+  function spawnClockRainDrops() {
+    if (!clockRain) return;
+    clockRain.classList.add("active");
+
+    for (let i = 0; i < 12; i++) {
+      const drop = document.createElement("span");
+      drop.className = "clock-rain-drop";
+      drop.textContent = matrixChars.charAt(Math.floor(Math.random() * matrixChars.length));
+      drop.style.left = Math.random() * 100 + "%";
+      drop.style.animationDelay = Math.random() * 0.3 + "s";
+      drop.style.animationDuration = (0.3 + Math.random() * 0.4) + "s";
+      clockRain.appendChild(drop);
+    }
+
+    setTimeout(() => {
+      clockRain.classList.remove("active");
+      clockRain.innerHTML = "";
+    }, 800);
+  }
 
   function updateClock() {
     const now = new Date();
@@ -103,10 +126,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const minutes = String(now.getMinutes()).padStart(2, "0");
     const timeStr = hours + ":" + minutes;
 
-    if (clockDisplay && timeStr !== lastTimeStr) {
-      clockDisplay.textContent = timeStr;
-      lastTimeStr = timeStr;
+    if (!clockDigits || timeStr === lastTimeStr) return;
+
+    const newChars = timeStr.split("");
+    const oldChars = lastTimeStr ? lastTimeStr.split("") : [];
+    const spans = clockDigits.querySelectorAll(".clock-digit");
+
+    let hasChanged = false;
+
+    for (let i = 0; i < newChars.length; i++) {
+      if (spans[i] && newChars[i] !== oldChars[i]) {
+        hasChanged = true;
+        spans[i].classList.add("changing");
+        spans[i].textContent = newChars[i];
+
+        const span = spans[i];
+        setTimeout(() => span.classList.remove("changing"), 650);
+      }
     }
+
+    if (hasChanged && lastTimeStr) {
+      spawnClockRainDrops();
+    }
+
+    lastTimeStr = timeStr;
   }
 
   // =====================

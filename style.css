@@ -445,7 +445,7 @@ input:focus{
 }
 
 .clock{
-  min-width:74px;
+  min-width:90px;
   text-align:center;
   padding:10px 12px;
   border-radius:12px;
@@ -453,6 +453,64 @@ input:focus{
   border:1px solid rgba(255,122,0,0.18);
   font-weight:700;
   box-shadow:0 0 18px rgba(255,122,0,0.08);
+  position:relative;
+  overflow:hidden;
+}
+
+.clock-digits{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:1px;
+  font-family:monospace;
+  font-size:1.1rem;
+  letter-spacing:2px;
+}
+
+.clock-digit{
+  display:inline-block;
+  position:relative;
+  transition:opacity 0.1s ease;
+}
+
+.clock-digit.changing{
+  animation:matrixDigitChange 0.6s ease forwards;
+}
+
+@keyframes matrixDigitChange{
+  0%{ opacity:1; transform:translateY(0); text-shadow:none; }
+  15%{ opacity:0.4; transform:translateY(-4px); text-shadow:0 0 8px rgba(255,122,0,0.8); }
+  30%{ opacity:0.7; transform:translateY(2px); text-shadow:0 4px 12px rgba(255,122,0,0.6); color:rgba(255,154,47,1); }
+  50%{ opacity:0.3; transform:translateY(-2px); text-shadow:0 0 16px rgba(255,122,0,1); }
+  70%{ opacity:0.8; transform:translateY(1px); text-shadow:0 2px 8px rgba(255,122,0,0.5); }
+  100%{ opacity:1; transform:translateY(0); text-shadow:0 0 6px rgba(255,122,0,0.3); }
+}
+
+.clock-rain{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  opacity:0;
+  transition:opacity 0.3s ease;
+}
+
+.clock-rain.active{
+  opacity:1;
+}
+
+.clock-rain-drop{
+  position:absolute;
+  font-family:monospace;
+  font-size:8px;
+  color:rgba(255,122,0,0.7);
+  text-shadow:0 0 4px rgba(255,122,0,0.5);
+  animation:clockRainFall 0.5s linear forwards;
+}
+
+@keyframes clockRainFall{
+  0%{ transform:translateY(-100%); opacity:0.9; }
+  100%{ transform:translateY(200%); opacity:0; }
 }
 
 .chat-main{
