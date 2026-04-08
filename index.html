@@ -76,57 +76,18 @@
       </nav>
     </aside>
 
-    <!-- INTRO -->
-    <section id="introScreen" class="screen active">
-      <div class="center-wrap">
-        <div class="card">
-          <h1 class="title">Nouveau Riviere</h1>
-          <p class="subtitle">Application travail personnelle et futuriste</p>
-
-          <div class="intro-avatar-wrap">
-            <div class="intro-avatar" id="introAvatar">
-              <div class="eyes" id="introEyes">
-                <div class="eye"></div>
-                <div class="eye"></div>
-              </div>
-              <div class="fallback">IA</div>
-            </div>
-          </div>
-
-          <div id="introMessage" class="intro-message"></div>
-          <p class="intro-small">Initialisation de l'application...</p>
+    <!-- ACCUEIL - juste la pluie Matrix + 2 boutons -->
+    <section id="homeScreen" class="screen active">
+      <div class="home-fullscreen">
+        <div class="home-menu-wrap">
+          <button id="goLoginBtn" class="home-menu-item" type="button">Connexion</button>
+          <button id="goSignupBtn" class="home-menu-item" type="button">Inscription</button>
         </div>
       </div>
     </section>
 
-    <!-- ACCUEIL -->
-    <section id="homeScreen" class="screen">
-      <div class="hero">
-        <div class="card">
-          <h1 class="title">Nouveau Riviere</h1>
-          <p class="subtitle">Assistant intelligent futuriste</p>
-
-          <div class="intro-avatar-wrap">
-            <div class="intro-avatar" id="homeAvatar">
-              <div class="eyes" id="homeEyes">
-                <div class="eye"></div>
-                <div class="eye"></div>
-              </div>
-              <div class="fallback">IA</div>
-            </div>
-          </div>
-
-          <h2 style="font-size:clamp(1.8rem,6vw,2.4rem);margin-bottom:10px;">Bienvenue Alex</h2>
-          <p class="subtitle" style="margin-bottom:0;">Entre dans ton espace intelligent.</p>
-
-          <div class="hero-actions">
-            <button id="enterBtn" class="primary-btn" type="button">Entrer</button>
-            <button id="goLoginBtn" class="secondary-btn" type="button">Connecter</button>
-            <button id="goSignupBtn" class="secondary-btn" type="button">Inscription</button>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- EFFET TV CRT -->
+    <div id="crtOverlay" class="crt-overlay"></div>
 
     <!-- CONNEXION -->
     <section id="loginScreen" class="screen">
@@ -192,15 +153,19 @@
     <!-- CHAT -->
     <section id="chatScreen" class="screen">
       <div class="chat-layout">
+        <!-- TOP BAR -->
         <header class="chat-header">
           <div class="chat-header-left">
             <button id="openMenuBtn" class="icon-btn" type="button">&#9776;</button>
             <div class="mini-avatar" id="miniAvatar">IA</div>
           </div>
 
-          <div class="chat-header-center">
-            <h2>Nouveau Riviere</h2>
-          </div>
+          <nav class="top-nav">
+            <button class="top-nav-btn active" type="button" data-screen="chatScreen">Chat</button>
+            <button class="top-nav-btn" type="button" data-screen="historyScreen">Historique</button>
+            <button class="top-nav-btn" type="button" data-screen="projectsScreen">Travail</button>
+            <button class="top-nav-btn" type="button" data-screen="codeScreen">Code</button>
+          </nav>
 
           <div class="chat-header-right">
             <button id="ytMusicBtn" class="yt-music-btn" type="button" title="YouTube Music">
@@ -218,23 +183,36 @@
           </div>
         </header>
 
-        <main class="chat-main">
-          <aside class="ai-side">
+        <div class="chat-body">
+          <!-- MENU GAUCHE (sidebar) -->
+          <aside class="left-panel">
             <div id="aiOrb" class="ai-orb">IA</div>
+            <nav class="left-nav">
+              <button class="left-nav-btn" type="button" data-screen="appsScreen" title="Mes Apps">&#9733;</button>
+              <button class="left-nav-btn" type="button" data-screen="filesScreen" title="Fichiers">&#128196;</button>
+              <button class="left-nav-btn" type="button" data-screen="settingsScreen" title="Parametres">&#9881;</button>
+            </nav>
           </aside>
 
-          <section class="chat-zone">
+          <!-- ZONE CHAT CENTRE -->
+          <main class="chat-center">
             <div id="chatMessages" class="chat-messages">
               <div class="message message-ai">
                 <div class="message-bubble">Bonjour Alex. Je suis pret.</div>
               </div>
             </div>
-          </section>
-        </main>
+          </main>
+
+          <!-- MENU DROITE -->
+          <aside class="right-panel">
+            <button class="right-nav-btn" type="button" data-screen="codeScreen" title="Studio Code">&#60;/&#62;</button>
+            <button class="right-nav-btn" type="button" data-screen="projectsScreen" title="Travail">&#128188;</button>
+            <button class="right-nav-btn" type="button" data-screen="historyScreen" title="Historique">&#128337;</button>
+            <button class="right-nav-btn" type="button" id="newChatBtn" title="Nouveau chat">&#43;</button>
+          </aside>
+        </div>
 
         <footer class="chat-footer">
-          <button id="newChatBtn" class="secondary-btn" type="button">Nouveau chat</button>
-
           <form id="chatForm" class="chat-input-bar">
             <input id="chatInput" type="text" placeholder="Ecris ton message..." autocomplete="off" />
             <button class="primary-btn" type="submit">Envoyer</button>

@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const chatInput = document.getElementById("chatInput");
   const aiOrb = document.getElementById("aiOrb");
 
-  const enterBtn = document.getElementById("enterBtn");
   const goLoginBtn = document.getElementById("goLoginBtn");
   const goSignupBtn = document.getElementById("goSignupBtn");
   const loginToSignupBtn = document.getElementById("loginToSignupBtn");
@@ -21,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const newChatBtn = document.getElementById("newChatBtn");
   const saveSettingsBtn = document.getElementById("saveSettingsBtn");
   const logoutBtn = document.getElementById("logoutBtn");
+  const crtOverlay = document.getElementById("crtOverlay");
 
   const loginForm = document.getElementById("loginForm");
   const signupForm = document.getElementById("signupForm");
@@ -31,13 +31,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const colorOptions = document.querySelectorAll(".color-option");
   const screenButtons = document.querySelectorAll("[data-screen]");
   const menuLinks = document.querySelectorAll(".menu-link");
+  const topNavBtns = document.querySelectorAll(".top-nav-btn");
 
   const avatarUpload = document.getElementById("avatarUpload");
   const settingsAvatarPreview = document.getElementById("settingsAvatarPreview");
-  const introAvatar = document.getElementById("introAvatar");
   const homeAvatar = document.getElementById("homeAvatar");
   const miniAvatar = document.getElementById("miniAvatar");
-  const introMessage = document.getElementById("introMessage");
 
   let selectedTheme = localStorage.getItem("nr_theme") || "noir";
   let avatarData = localStorage.getItem("nr_avatar") || "";
@@ -55,6 +54,28 @@ document.addEventListener("DOMContentLoaded", () => {
     if (screenId === "chatScreen" && chatInput) {
       setTimeout(() => chatInput.focus(), 120);
     }
+
+    topNavBtns.forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.screen === screenId);
+    });
+  }
+
+  function showScreenWithCRT(screenId) {
+    if (!crtOverlay) {
+      showScreen(screenId);
+      return;
+    }
+
+    crtOverlay.className = "crt-overlay crt-close";
+
+    setTimeout(() => {
+      showScreen(screenId);
+      crtOverlay.className = "crt-overlay crt-open";
+    }, 1500);
+
+    setTimeout(() => {
+      crtOverlay.className = "crt-overlay";
+    }, 3200);
   }
 
   // =====================
@@ -357,7 +378,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // =====================
 
   function setAvatarUI(imageData) {
-    const targets = [settingsAvatarPreview, introAvatar, homeAvatar, miniAvatar, aiOrb];
+    const targets = [settingsAvatarPreview, miniAvatar, aiOrb];
 
     targets.forEach((target) => {
       if (!target) return;
@@ -365,12 +386,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (imageData) {
         target.innerHTML = '<img src="' + imageData + '" alt="Avatar" />';
       } else {
-        if (target === introAvatar || target === homeAvatar) {
-          target.innerHTML =
-            '<div class="eyes"><div class="eye"></div><div class="eye"></div></div><div class="fallback">IA</div>';
-        } else {
-          target.textContent = "IA";
-        }
+        target.textContent = "IA";
       }
     });
   }
@@ -398,20 +414,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =====================
-  // INTRO
+  // HOME MENU ANIMATION
   // =====================
 
-  function startIntroSequence() {
-    showScreen("introScreen");
-    introMessage.textContent = "";
+  function startHomeAnimation() {
+    showScreen("homeScreen");
+    const homeItems = document.querySelectorAll(".home-menu-item");
+    homeItems.forEach((item) => item.classList.remove("visible"));
 
     setTimeout(() => {
-      introMessage.textContent = "Salut Alex";
-    }, 5000);
-
-    setTimeout(() => {
-      showScreen("homeScreen");
-    }, 7600);
+      homeItems.forEach((item) => item.classList.add("visible"));
+    }, 100);
   }
 
   // =====================
@@ -942,13 +955,19 @@ document.addEventListener("DOMContentLoaded", () => {
   // EVENT LISTENERS
   // =====================
 
-  enterBtn.addEventListener("click", () => showScreen("chatScreen"));
   goLoginBtn.addEventListener("click", () => showScreen("loginScreen"));
   goSignupBtn.addEventListener("click", () => showScreen("signupScreen"));
   loginToSignupBtn.addEventListener("click", () => showScreen("signupScreen"));
   loginBackHomeBtn.addEventListener("click", () => showScreen("homeScreen"));
   signupToLoginBtn.addEventListener("click", () => showScreen("loginScreen"));
   signupBackHomeBtn.addEventListener("click", () => showScreen("homeScreen"));
+
+  topNavBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const target = btn.dataset.screen;
+      if (target) showScreen(target);
+    });
+  });
 
   openMenuBtn.addEventListener("click", openMenu);
   closeMenuBtn.addEventListener("click", closeMenu);
@@ -980,7 +999,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   logoutBtn.addEventListener("click", () => {
     closeMenu();
-    showScreen("homeScreen");
+    showScreenWithCRT("homeScreen");
+    setTimeout(() => startHomeAnimation(), 3200);
   });
 
   loginForm.addEventListener("submit", (event) => {
@@ -991,7 +1011,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (username === "alex" && password === "1234") {
       loginErrorBox.classList.add("hidden");
-      showScreen("chatScreen");
+      showScreenWithCRT("chatScreen");
     } else {
       showLoginError();
     }
@@ -999,7 +1019,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   signupForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    showScreen("chatScreen");
+    showScreenWithCRT("chatScreen");
   });
 
   chatForm.addEventListener("submit", (event) => {
@@ -1039,5 +1059,5 @@ document.addEventListener("DOMContentLoaded", () => {
   applyTheme(selectedTheme);
   setAvatarUI(avatarData);
   resetChat();
-  startIntroSequence();
+  startHomeAnimation();
 });
