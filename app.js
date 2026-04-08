@@ -40,6 +40,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let selectedTheme = localStorage.getItem("nr_theme") || "noir";
   let avatarData = localStorage.getItem("nr_avatar") || "";
+  let geminiApiKey = localStorage.getItem("nr_gemini_key") || "";
+  let chatHistory = [];
 
   // =====================
   // NAVIGATION
@@ -210,125 +212,90 @@ document.addEventListener("DOMContentLoaded", () => {
     scrollMessagesToBottom();
   }
 
+  // =====================
+  // GEMINI AI
+  // =====================
+
+  const aiStatusDot = document.querySelector(".ai-status-dot");
+  const aiStatusText = document.getElementById("aiStatusText");
+  const geminiApiKeyInput = document.getElementById("geminiApiKeyInput");
+  const geminiStatus = document.getElementById("geminiStatus");
+
+  function updateAiStatus() {
+    if (geminiApiKey) {
+      if (aiStatusDot) { aiStatusDot.className = "ai-status-dot online"; }
+      if (aiStatusText) aiStatusText.textContent = "Gemini IA connecte";
+    } else {
+      if (aiStatusDot) { aiStatusDot.className = "ai-status-dot offline"; }
+      if (aiStatusText) aiStatusText.textContent = "Mode demo - Ajoute ta cle Gemini dans Parametres";
+    }
+  }
+
+  function setAiThinking(isThinking) {
+    if (isThinking) {
+      if (aiStatusDot) aiStatusDot.className = "ai-status-dot thinking";
+      if (aiStatusText) aiStatusText.textContent = "Gemini reflechit...";
+    } else {
+      updateAiStatus();
+    }
+  }
+
+  async function askGemini(userText) {
+    chatHistory.push({ role: "user", parts: [{ text: userText }] });
+
+    const systemInstruction = "Tu es l'assistant personnel intelligent de Alex dans l'application Nouveau Riviere. Tu reponds en francais, de facon claire, utile et concise. Tu peux aider avec le travail, le code, les projets, les idees, et tout ce que Alex demande. Sois amical et direct.";
+
+    const body = {
+      system_instruction: { parts: [{ text: systemInstruction }] },
+      contents: chatHistory,
+      generationConfig: {
+        temperature: 0.8,
+        maxOutputTokens: 1024
+      }
+    };
+
+    const response = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + geminiApiKey,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      }
+    );
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.error?.message || "Erreur API " + response.status);
+    }
+
+    const data = await response.json();
+    const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Je n'ai pas pu generer une reponse.";
+
+    chatHistory.push({ role: "model", parts: [{ text: aiText }] });
+
+    if (chatHistory.length > 20) {
+      chatHistory = chatHistory.slice(-16);
+    }
+
+    return aiText;
+  }
+
   function getDemoResponse(userText) {
     const text = userText.toLowerCase().trim();
-
     const rules = [
-      {
-        keywords: ["bonjour", "salut", "allo", "hello"],
-        replies: [
-          "Salut Alex. Je suis pret a t'aider.",
-          "Bonjour Alex. Que veux-tu faire aujourd'hui ?",
-          "Salut Alex, ton assistant travail est en ligne."
-        ]
-      },
-      {
-        keywords: ["ca va", "comment vas", "tu vas bien"],
-        replies: [
-          "Oui Alex, je vais bien et je suis pret a travailler avec toi.",
-          "Je suis operationnel Alex.",
-          "Tout est pret de mon cote."
-        ]
-      },
-      {
-        keywords: ["travail", "job", "projet", "tache", "mission"],
-        replies: [
-          "On peut organiser ton travail, tes projets et tes idees ici.",
-          "Je peux t'aider a structurer un projet etape par etape.",
-          "Dis-moi ton objectif de travail et je t'aide a le decouper."
-        ]
-      },
-      {
-        keywords: ["code", "coder", "html", "css", "javascript", "js"],
-        replies: [
-          "Je peux t'aider a ecrire du code HTML, CSS et JavaScript.",
-          "On peut corriger ton code ou construire une nouvelle base propre.",
-          "Dis-moi ce que tu veux coder et je te guide."
-        ]
-      },
-      {
-        keywords: ["avatar", "photo", "image", "profil"],
-        replies: [
-          "Tu peux changer ton avatar dans les parametres quand tu veux.",
-          "Va dans Parametres pour telecharger une nouvelle image.",
-          "L'avatar peut etre mis a jour localement depuis ton appareil."
-        ]
-      },
-      {
-        keywords: ["matrix", "pluie", "effet", "animation"],
-        replies: [
-          "La pluie Matrix reste active en arriere-plan de l'application.",
-          "L'effet Matrix tourne deja sur l'ecran.",
-          "On peut renforcer l'effet Matrix si tu veux une version plus intense."
-        ]
-      },
-      {
-        keywords: ["heure", "temps", "clock"],
-        replies: [
-          "L'heure s'affiche en haut a droite dans l'application.",
-          "Le systeme met l'heure a jour automatiquement.",
-          "L'horloge fonctionne en direct."
-        ]
-      },
-      {
-        keywords: ["parametre", "parametres", "reglage", "theme", "couleur"],
-        replies: [
-          "Dans les parametres, tu peux changer le theme et l'avatar.",
-          "Les couleurs disponibles sont noir, blanc, orange, bleu, rouge et vert.",
-          "Le theme principal reste noir avec texte blanc et accent orange."
-        ]
-      },
-      {
-        keywords: ["connexion", "connecter", "login", "mot de passe", "utilisateur"],
-        replies: [
-          "La connexion locale verifie actuellement le nom utilisateur et le mot de passe.",
-          "Si les identifiants sont faux, l'application affiche une tete de mort et retourne a l'accueil.",
-          "On peut renforcer le systeme de connexion plus tard."
-        ]
-      },
-      {
-        keywords: ["alex"],
-        replies: [
-          "Oui Alex, je suis la.",
-          "Bienvenue Alex. Que veux-tu faire maintenant ?",
-          "Je suis pret a travailler avec toi Alex."
-        ]
-      },
-      {
-        keywords: ["aide", "help", "quoi faire", "menu"],
-        replies: [
-          "Je peux t'aider avec le travail, le code, les projets, les themes et l'organisation.",
-          "Tu peux utiliser le menu pour acceder au travail, a l'historique et aux parametres.",
-          "Demande-moi par exemple : aide projet, aide code, aide theme, aide travail."
-        ]
-      }
+      { keywords: ["bonjour","salut","allo","hello"], replies: ["Salut Alex! Je suis en mode demo. Ajoute ta cle Gemini dans Parametres pour des vraies reponses IA."] },
+      { keywords: ["aide","help"], replies: ["Je suis en mode demo. Va dans Parametres et ajoute ta cle API Gemini gratuite pour me rendre intelligent!"] }
     ];
 
     for (const rule of rules) {
-      if (rule.keywords.some((keyword) => text.includes(keyword))) {
-        return rule.replies[Math.floor(Math.random() * rule.replies.length)];
+      if (rule.keywords.some((kw) => text.includes(kw))) {
+        return rule.replies[0];
       }
     }
-
-    if (text.length < 3) {
-      return "Ecris-moi une question un peu plus complete, Alex.";
-    }
-
-    if (text.endsWith("?")) {
-      return "Bonne question Alex. Donne-moi un peu plus de details et je vais t'aider.";
-    }
-
-    const genericReplies = [
-      "Message recu. Explique-moi ton besoin plus en detail et je t'aide.",
-      "Je comprends. Donne-moi plus de contexte pour que je te reponde mieux.",
-      "Je suis pret a t'aider. Precise ce que tu veux faire exactement.",
-      "On peut travailler la-dessus ensemble. Dis-moi la prochaine etape."
-    ];
-
-    return genericReplies[Math.floor(Math.random() * genericReplies.length)];
+    return "Mode demo actif. Pour des reponses intelligentes, ajoute ta cle Gemini dans les Parametres (c'est gratuit!).";
   }
 
-  function handleSendMessage() {
+  async function handleSendMessage() {
     const userText = chatInput.value.trim();
     if (!userText) return;
 
@@ -336,10 +303,22 @@ document.addEventListener("DOMContentLoaded", () => {
     chatInput.value = "";
     animateAiOrb();
 
-    setTimeout(() => {
-      addMessage(getDemoResponse(userText), "ai");
-      animateAiOrb();
-    }, 550);
+    if (geminiApiKey) {
+      setAiThinking(true);
+      try {
+        const reply = await askGemini(userText);
+        addMessage(reply, "ai");
+      } catch (err) {
+        addMessage("Erreur: " + err.message, "ai");
+      }
+      setAiThinking(false);
+    } else {
+      setTimeout(() => {
+        addMessage(getDemoResponse(userText), "ai");
+      }, 400);
+    }
+
+    animateAiOrb();
   }
 
   function resetChat() {
@@ -1047,7 +1026,19 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   saveSettingsBtn.addEventListener("click", () => {
-    alert("Parametres enregistres");
+    if (geminiApiKeyInput) {
+      const newKey = geminiApiKeyInput.value.trim();
+      if (newKey) {
+        geminiApiKey = newKey;
+        localStorage.setItem("nr_gemini_key", geminiApiKey);
+        if (geminiStatus) {
+          geminiStatus.textContent = "Cle sauvegardee! Gemini IA est maintenant actif.";
+          geminiStatus.style.color = "#00ff66";
+        }
+      }
+    }
+    updateAiStatus();
+    alert("Parametres enregistres!");
   });
 
   // =====================
@@ -1060,4 +1051,13 @@ document.addEventListener("DOMContentLoaded", () => {
   setAvatarUI(avatarData);
   resetChat();
   startHomeAnimation();
+  updateAiStatus();
+
+  if (geminiApiKeyInput && geminiApiKey) {
+    geminiApiKeyInput.value = geminiApiKey;
+    if (geminiStatus) {
+      geminiStatus.textContent = "Gemini IA actif";
+      geminiStatus.style.color = "#00ff66";
+    }
+  }
 });

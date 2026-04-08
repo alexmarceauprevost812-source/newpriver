@@ -213,6 +213,10 @@
         </div>
 
         <footer class="chat-footer">
+          <div id="aiStatusBar" class="ai-status-bar">
+            <span class="ai-status-dot offline"></span>
+            <span id="aiStatusText">Mode demo - Ajoute ta cle Gemini dans Parametres</span>
+          </div>
           <form id="chatForm" class="chat-input-bar">
             <input id="chatInput" type="text" placeholder="Ecris ton message..." autocomplete="off" />
             <button class="primary-btn" type="submit">Envoyer</button>
@@ -436,6 +440,16 @@ p { color: white; }</textarea>
             <section class="settings-group">
               <h3>Effets</h3>
               <p>La pluie Matrix reste toujours affichee a l'ecran.</p>
+            </section>
+
+            <section class="settings-group">
+              <h3>Intelligence Artificielle (Gemini)</h3>
+              <p>Entre ta cle API Google Gemini pour avoir des reponses intelligentes dans le chat.</p>
+              <p style="font-size:0.8rem;margin-top:6px;color:var(--accent);">Gratuit sur aistudio.google.com → Get API Key</p>
+              <div style="margin-top:10px;">
+                <input id="geminiApiKeyInput" type="password" placeholder="Colle ta cle API Gemini ici..." />
+              </div>
+              <div id="geminiStatus" style="margin-top:8px;font-size:0.85rem;"></div>
             </section>
           </div>
 

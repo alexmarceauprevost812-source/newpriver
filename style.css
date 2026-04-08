@@ -753,6 +753,37 @@ input:focus{
   gap:10px;
 }
 
+.ai-status-bar{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:0.75rem;
+  color:var(--muted);
+  padding:0 4px;
+}
+
+.ai-status-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+
+.ai-status-dot.offline{
+  background:#666;
+}
+
+.ai-status-dot.online{
+  background:#00ff66;
+  box-shadow:0 0 6px rgba(0,255,100,0.5);
+}
+
+.ai-status-dot.thinking{
+  background:var(--accent);
+  box-shadow:0 0 8px rgba(255,122,0,0.5);
+  animation:pulseGlow 1s infinite;
+}
+
 .chat-input-bar{
   display:grid;
   grid-template-columns:1fr auto;
