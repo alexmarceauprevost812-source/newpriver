@@ -500,6 +500,103 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(drawMatrix, 40);
 
   // =====================
+  // STUDIO DE CODE
+  // =====================
+
+  const codeTabs = document.querySelectorAll(".code-tab");
+  const codeEditors = document.querySelectorAll(".code-editor");
+  const codeRunBtn = document.getElementById("codeRunBtn");
+  const codeSaveBtn = document.getElementById("codeSaveBtn");
+  const codeLoadSelect = document.getElementById("codeLoadSelect");
+  const codePreviewWrap = document.getElementById("codePreviewWrap");
+  const codePreview = document.getElementById("codePreview");
+  const codeClosePreview = document.getElementById("codeClosePreview");
+  const codeEditorHtml = document.getElementById("codeEditorHtml");
+  const codeEditorCss = document.getElementById("codeEditorCss");
+  const codeEditorJs = document.getElementById("codeEditorJs");
+
+  let codeProjects = JSON.parse(localStorage.getItem("nr_code_projects") || "[]");
+
+  codeTabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      codeTabs.forEach((t) => t.classList.remove("active"));
+      codeEditors.forEach((e) => e.classList.remove("active"));
+      tab.classList.add("active");
+      const lang = tab.dataset.lang;
+      const editor = document.getElementById("codeEditor" + lang.charAt(0).toUpperCase() + lang.slice(1));
+      if (editor) editor.classList.add("active");
+    });
+  });
+
+  if (codeRunBtn) {
+    codeRunBtn.addEventListener("click", () => {
+      const html = codeEditorHtml ? codeEditorHtml.value : "";
+      const css = codeEditorCss ? codeEditorCss.value : "";
+      const js = codeEditorJs ? codeEditorJs.value : "";
+
+      const fullCode = "<!DOCTYPE html><html><head><style>" + css + "</style></head><body style='background:#111;color:#fff;font-family:Arial,sans-serif;padding:20px;'>" + html + "<script>" + js + "<\/script></body></html>";
+
+      if (codePreviewWrap) codePreviewWrap.style.display = "";
+      if (codePreview) {
+        codePreview.srcdoc = fullCode;
+      }
+    });
+  }
+
+  if (codeClosePreview) {
+    codeClosePreview.addEventListener("click", () => {
+      if (codePreviewWrap) codePreviewWrap.style.display = "none";
+    });
+  }
+
+  if (codeSaveBtn) {
+    codeSaveBtn.addEventListener("click", () => {
+      const name = prompt("Nom du projet :");
+      if (!name || !name.trim()) return;
+
+      codeProjects.push({
+        name: name.trim(),
+        html: codeEditorHtml ? codeEditorHtml.value : "",
+        css: codeEditorCss ? codeEditorCss.value : "",
+        js: codeEditorJs ? codeEditorJs.value : "",
+        date: new Date().toISOString()
+      });
+
+      localStorage.setItem("nr_code_projects", JSON.stringify(codeProjects));
+      renderCodeProjects();
+      alert("Projet sauvegarde !");
+    });
+  }
+
+  function renderCodeProjects() {
+    if (!codeLoadSelect) return;
+    codeLoadSelect.innerHTML = '<option value="">-- Charger un projet --</option>';
+
+    codeProjects.forEach((project, index) => {
+      const opt = document.createElement("option");
+      opt.value = index;
+      opt.textContent = project.name;
+      codeLoadSelect.appendChild(opt);
+    });
+  }
+
+  if (codeLoadSelect) {
+    codeLoadSelect.addEventListener("change", () => {
+      const index = parseInt(codeLoadSelect.value);
+      if (isNaN(index)) return;
+
+      const project = codeProjects[index];
+      if (!project) return;
+
+      if (codeEditorHtml) codeEditorHtml.value = project.html;
+      if (codeEditorCss) codeEditorCss.value = project.css;
+      if (codeEditorJs) codeEditorJs.value = project.js;
+    });
+  }
+
+  renderCodeProjects();
+
+  // =====================
   // GESTIONNAIRE DE FICHIERS PRIVES
   // =====================
 

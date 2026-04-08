@@ -24,6 +24,7 @@
         <button class="menu-link" type="button" data-screen="chatScreen">Entrer</button>
         <button class="menu-link" type="button" data-screen="historyScreen">Historique</button>
         <button class="menu-link" type="button" data-screen="projectsScreen">Travail</button>
+        <button class="menu-link" type="button" data-screen="codeScreen">Studio Code</button>
         <button class="menu-link" type="button" data-screen="filesScreen">Fichiers</button>
         <button class="menu-link" type="button" data-screen="settingsScreen">Parametres</button>
         <button class="menu-link danger" type="button" id="logoutBtn">Deconnexion</button>
@@ -237,6 +238,50 @@
               <h3>+ Creer</h3>
               <p>Ajouter un nouveau projet.</p>
             </div>
+          </div>
+
+          <div class="panel-actions">
+            <button class="secondary-btn" type="button" data-screen="chatScreen">Retour au chat</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STUDIO DE CODE -->
+    <section id="codeScreen" class="screen">
+      <div class="panel-screen">
+        <div class="card" style="max-width:700px;">
+          <h2 style="font-size:1.8rem;margin-bottom:8px;">Studio de Code</h2>
+          <p class="subtitle" style="text-align:left;">Ecris et teste ton code directement dans l'appli.</p>
+
+          <div class="code-tabs">
+            <button class="code-tab active" type="button" data-lang="html">HTML</button>
+            <button class="code-tab" type="button" data-lang="css">CSS</button>
+            <button class="code-tab" type="button" data-lang="js">JS</button>
+          </div>
+
+          <div class="code-editor-wrap">
+            <textarea id="codeEditorHtml" class="code-editor active" spellcheck="false" placeholder="<!-- Ecris ton HTML ici -->">&lt;h1&gt;Salut Alex&lt;/h1&gt;
+&lt;p&gt;Mon premier code!&lt;/p&gt;</textarea>
+            <textarea id="codeEditorCss" class="code-editor" spellcheck="false" placeholder="/* Ecris ton CSS ici */">h1 { color: #ff7a00; }
+p { color: white; }</textarea>
+            <textarea id="codeEditorJs" class="code-editor" spellcheck="false" placeholder="// Ecris ton JavaScript ici">console.log("Salut Alex!");</textarea>
+          </div>
+
+          <div class="code-actions">
+            <button id="codeRunBtn" class="primary-btn" type="button" style="width:100%;">Executer</button>
+            <button id="codeSaveBtn" class="secondary-btn" type="button" style="width:100%;">Sauvegarder le projet</button>
+            <select id="codeLoadSelect" class="code-select">
+              <option value="">-- Charger un projet --</option>
+            </select>
+          </div>
+
+          <div id="codePreviewWrap" class="code-preview-wrap" style="display:none;">
+            <div class="code-preview-header">
+              <span>Apercu</span>
+              <button id="codeClosePreview" class="icon-btn" type="button" style="width:32px;height:32px;font-size:0.8rem;">&#10005;</button>
+            </div>
+            <iframe id="codePreview" class="code-preview" sandbox="allow-scripts"></iframe>
           </div>
 
           <div class="panel-actions">
