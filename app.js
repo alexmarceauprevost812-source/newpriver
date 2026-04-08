@@ -500,6 +500,104 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(drawMatrix, 40);
 
   // =====================
+  // NAVIGATEUR D'APPS
+  // =====================
+
+  const appUrlInput = document.getElementById("appUrlInput");
+  const appGoBtn = document.getElementById("appGoBtn");
+  const appBrowserWrap = document.getElementById("appBrowserWrap");
+  const appBrowserFrame = document.getElementById("appBrowserFrame");
+  const appBrowserTitle = document.getElementById("appBrowserTitle");
+  const appBrowserClose = document.getElementById("appBrowserClose");
+  const appShortcuts = document.getElementById("appShortcuts");
+  const addAppBtn = document.getElementById("addAppBtn");
+
+  let savedApps = JSON.parse(localStorage.getItem("nr_apps") || "[]");
+
+  function openAppUrl(url) {
+    if (!url.startsWith("http")) url = "https://" + url;
+    if (appBrowserWrap) appBrowserWrap.style.display = "";
+    if (appBrowserFrame) appBrowserFrame.src = url;
+    if (appBrowserTitle) appBrowserTitle.textContent = url;
+    if (appUrlInput) appUrlInput.value = url;
+  }
+
+  if (appGoBtn) {
+    appGoBtn.addEventListener("click", () => {
+      const url = appUrlInput ? appUrlInput.value.trim() : "";
+      if (url) openAppUrl(url);
+    });
+  }
+
+  if (appUrlInput) {
+    appUrlInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const url = appUrlInput.value.trim();
+        if (url) openAppUrl(url);
+      }
+    });
+  }
+
+  if (appBrowserClose) {
+    appBrowserClose.addEventListener("click", () => {
+      if (appBrowserWrap) appBrowserWrap.style.display = "none";
+      if (appBrowserFrame) appBrowserFrame.src = "about:blank";
+    });
+  }
+
+  if (addAppBtn) {
+    addAppBtn.addEventListener("click", () => {
+      const name = prompt("Nom de l'app :");
+      if (!name || !name.trim()) return;
+      const url = prompt("URL de l'app :");
+      if (!url || !url.trim()) return;
+
+      savedApps.push({ name: name.trim(), url: url.trim() });
+      localStorage.setItem("nr_apps", JSON.stringify(savedApps));
+      renderAppShortcuts();
+    });
+  }
+
+  function renderAppShortcuts() {
+    if (!appShortcuts) return;
+    appShortcuts.innerHTML = "";
+
+    savedApps.forEach((app, index) => {
+      const shortcut = document.createElement("div");
+      shortcut.className = "app-shortcut";
+
+      const initial = app.name.charAt(0).toUpperCase();
+
+      shortcut.innerHTML =
+        '<div class="app-shortcut-icon">' + initial + '</div>' +
+        '<span>' + app.name + '</span>' +
+        '<button class="app-shortcut-delete" type="button" data-index="' + index + '">supprimer</button>';
+
+      shortcut.addEventListener("click", (e) => {
+        if (e.target.classList.contains("app-shortcut-delete")) return;
+        openAppUrl(app.url);
+      });
+
+      appShortcuts.appendChild(shortcut);
+    });
+
+    appShortcuts.querySelectorAll(".app-shortcut-delete").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const idx = parseInt(btn.dataset.index);
+        if (confirm("Supprimer " + savedApps[idx].name + " ?")) {
+          savedApps.splice(idx, 1);
+          localStorage.setItem("nr_apps", JSON.stringify(savedApps));
+          renderAppShortcuts();
+        }
+      });
+    });
+  }
+
+  renderAppShortcuts();
+
+  // =====================
   // STUDIO DE CODE
   // =====================
 

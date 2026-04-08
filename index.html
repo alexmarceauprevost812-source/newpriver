@@ -24,6 +24,7 @@
         <button class="menu-link" type="button" data-screen="chatScreen">Entrer</button>
         <button class="menu-link" type="button" data-screen="historyScreen">Historique</button>
         <button class="menu-link" type="button" data-screen="projectsScreen">Travail</button>
+        <button class="menu-link" type="button" data-screen="appsScreen">Mes Apps</button>
         <button class="menu-link" type="button" data-screen="codeScreen">Studio Code</button>
         <button class="menu-link" type="button" data-screen="filesScreen">Fichiers</button>
         <button class="menu-link" type="button" data-screen="settingsScreen">Parametres</button>
@@ -238,6 +239,40 @@
               <h3>+ Creer</h3>
               <p>Ajouter un nouveau projet.</p>
             </div>
+          </div>
+
+          <div class="panel-actions">
+            <button class="secondary-btn" type="button" data-screen="chatScreen">Retour au chat</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NAVIGATEUR D'APPS -->
+    <section id="appsScreen" class="screen">
+      <div class="panel-screen">
+        <div class="card" style="max-width:600px;">
+          <h2 style="font-size:1.8rem;margin-bottom:8px;">Mes Applications</h2>
+          <p class="subtitle" style="text-align:left;">Accede a tes apps et sites favoris.</p>
+
+          <div class="app-url-bar">
+            <input id="appUrlInput" type="url" placeholder="Entre une URL (https://...)" />
+            <button id="appGoBtn" class="primary-btn" type="button" style="min-height:44px;padding:10px 16px;">Go</button>
+          </div>
+
+          <div id="appBrowserWrap" class="app-browser-wrap" style="display:none;">
+            <div class="app-browser-header">
+              <span id="appBrowserTitle">Chargement...</span>
+              <button id="appBrowserClose" class="icon-btn" type="button" style="width:32px;height:32px;font-size:0.8rem;">&#10005;</button>
+            </div>
+            <iframe id="appBrowserFrame" class="app-browser-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+          </div>
+
+          <h3 style="margin-top:22px;margin-bottom:12px;">Apps rapides</h3>
+          <div id="appShortcuts" class="app-shortcuts"></div>
+
+          <div class="stack" style="margin-top:16px;">
+            <button id="addAppBtn" class="secondary-btn" type="button">+ Ajouter une app</button>
           </div>
 
           <div class="panel-actions">
