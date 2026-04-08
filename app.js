@@ -500,6 +500,38 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(drawMatrix, 40);
 
   // =====================
+  // SYSTEME DE SECURITE
+  // =====================
+
+  const securityModal = document.getElementById("securityModal");
+  const securityMessage = document.getElementById("securityMessage");
+  const securityConfirm = document.getElementById("securityConfirm");
+  const securityCancel = document.getElementById("securityCancel");
+  let securityCallback = null;
+
+  function showSecurityWarning(message, onConfirm) {
+    if (securityMessage) securityMessage.textContent = message;
+    securityCallback = onConfirm;
+    if (securityModal) securityModal.classList.add("active");
+  }
+
+  function hideSecurityModal() {
+    if (securityModal) securityModal.classList.remove("active");
+    securityCallback = null;
+  }
+
+  if (securityConfirm) {
+    securityConfirm.addEventListener("click", () => {
+      if (securityCallback) securityCallback();
+      hideSecurityModal();
+    });
+  }
+
+  if (securityCancel) {
+    securityCancel.addEventListener("click", hideSecurityModal);
+  }
+
+  // =====================
   // NAVIGATEUR D'APPS
   // =====================
 
@@ -628,16 +660,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (codeRunBtn) {
     codeRunBtn.addEventListener("click", () => {
-      const html = codeEditorHtml ? codeEditorHtml.value : "";
-      const css = codeEditorCss ? codeEditorCss.value : "";
-      const js = codeEditorJs ? codeEditorJs.value : "";
+      showSecurityWarning(
+        "Tu es sur le point d'executer du code sur ton application privee. Confirmer ?",
+        () => {
+          const html = codeEditorHtml ? codeEditorHtml.value : "";
+          const css = codeEditorCss ? codeEditorCss.value : "";
+          const js = codeEditorJs ? codeEditorJs.value : "";
 
-      const fullCode = "<!DOCTYPE html><html><head><style>" + css + "</style></head><body style='background:#111;color:#fff;font-family:Arial,sans-serif;padding:20px;'>" + html + "<script>" + js + "<\/script></body></html>";
+          const fullCode = "<!DOCTYPE html><html><head><style>" + css + "</style></head><body style='background:#111;color:#fff;font-family:Arial,sans-serif;padding:20px;'>" + html + "<script>" + js + "<\/script></body></html>";
 
-      if (codePreviewWrap) codePreviewWrap.style.display = "";
-      if (codePreview) {
-        codePreview.srcdoc = fullCode;
-      }
+          if (codePreviewWrap) codePreviewWrap.style.display = "";
+          if (codePreview) {
+            codePreview.srcdoc = fullCode;
+          }
+        }
+      );
     });
   }
 
@@ -649,20 +686,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (codeSaveBtn) {
     codeSaveBtn.addEventListener("click", () => {
-      const name = prompt("Nom du projet :");
-      if (!name || !name.trim()) return;
+      showSecurityWarning(
+        "Tu es sur le point de sauvegarder du code sur ton application. Confirmer ?",
+        () => {
+          const name = prompt("Nom du projet :");
+          if (!name || !name.trim()) return;
 
-      codeProjects.push({
-        name: name.trim(),
-        html: codeEditorHtml ? codeEditorHtml.value : "",
-        css: codeEditorCss ? codeEditorCss.value : "",
-        js: codeEditorJs ? codeEditorJs.value : "",
-        date: new Date().toISOString()
-      });
+          codeProjects.push({
+            name: name.trim(),
+            html: codeEditorHtml ? codeEditorHtml.value : "",
+            css: codeEditorCss ? codeEditorCss.value : "",
+            js: codeEditorJs ? codeEditorJs.value : "",
+            date: new Date().toISOString()
+          });
 
-      localStorage.setItem("nr_code_projects", JSON.stringify(codeProjects));
-      renderCodeProjects();
-      alert("Projet sauvegarde !");
+          localStorage.setItem("nr_code_projects", JSON.stringify(codeProjects));
+          renderCodeProjects();
+          alert("Projet sauvegarde !");
+        }
+      );
     });
   }
 

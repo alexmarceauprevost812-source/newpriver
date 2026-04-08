@@ -1043,6 +1043,100 @@ input:focus{
   background:rgba(255,42,42,0.15);
 }
 
+/* === SECURITE / MODAL === */
+
+.security-modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.8);
+  backdrop-filter:blur(6px);
+  z-index:200;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.3s ease;
+}
+
+.security-modal-overlay.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.security-modal{
+  width:100%;
+  max-width:420px;
+  background:#111;
+  border:1px solid rgba(255,122,0,0.3);
+  border-radius:22px;
+  padding:28px 22px;
+  text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,0.6), 0 0 30px rgba(255,122,0,0.1);
+  transform:scale(0.9);
+  transition:transform 0.3s ease;
+}
+
+.security-modal-overlay.active .security-modal{
+  transform:scale(1);
+}
+
+.security-icon{
+  font-size:3rem;
+  margin-bottom:12px;
+  animation:pulseGlow 2s infinite;
+}
+
+.security-modal h2{
+  font-size:1.4rem;
+  margin-bottom:8px;
+}
+
+.security-modal p{
+  color:var(--muted);
+  line-height:1.5;
+  margin-bottom:18px;
+}
+
+.security-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.security-btn-confirm{
+  padding:12px;
+  border-radius:12px;
+  background:linear-gradient(180deg,var(--accent2),var(--accent));
+  color:#fff;
+  font-weight:700;
+  border:none;
+}
+
+.security-btn-cancel{
+  padding:12px;
+  border-radius:12px;
+  background:#1a1a1a;
+  color:#fff;
+  font-weight:700;
+  border:1px solid rgba(255,255,255,0.1);
+}
+
+.lock-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 14px;
+  border-radius:20px;
+  background:rgba(255,122,0,0.1);
+  border:1px solid rgba(255,122,0,0.2);
+  color:var(--accent);
+  font-size:0.8rem;
+  font-weight:700;
+  margin-top:8px;
+}
+
 /* === ANIMATIONS === */
 
 @keyframes pulseGlow{

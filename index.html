@@ -10,6 +10,19 @@
 <body>
   <canvas id="matrixCanvas"></canvas>
 
+  <!-- MODAL SECURITE -->
+  <div id="securityModal" class="security-modal-overlay">
+    <div class="security-modal">
+      <div class="security-icon">&#128274;</div>
+      <h2>Avertissement de securite</h2>
+      <p id="securityMessage">Etes-vous sur de vouloir effectuer cette action ?</p>
+      <div class="security-actions">
+        <button id="securityCancel" class="security-btn-cancel" type="button">Annuler</button>
+        <button id="securityConfirm" class="security-btn-confirm" type="button">Confirmer</button>
+      </div>
+    </div>
+  </div>
+
   <div id="app" class="app theme-noir">
     <div id="menuOverlay" class="menu-overlay hidden"></div>
 
@@ -287,7 +300,8 @@
       <div class="panel-screen">
         <div class="card" style="max-width:700px;">
           <h2 style="font-size:1.8rem;margin-bottom:8px;">Studio de Code</h2>
-          <p class="subtitle" style="text-align:left;">Ecris et teste ton code directement dans l'appli.</p>
+          <div class="lock-badge">&#128274; Application privee - Alex seulement</div>
+          <p class="subtitle" style="text-align:left;margin-top:10px;">Ecris et teste ton code directement dans l'appli.</p>
 
           <div class="code-tabs">
             <button class="code-tab active" type="button" data-lang="html">HTML</button>
