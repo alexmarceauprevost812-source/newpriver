@@ -1043,6 +1043,185 @@ input:focus{
   background:rgba(255,42,42,0.15);
 }
 
+/* === YOUTUBE MUSIC === */
+
+.yt-music-btn{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  background:#121212;
+  border:1px solid rgba(255,0,0,0.25);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 0 12px rgba(255,0,0,0.12);
+  transition:all 0.25s ease;
+}
+
+.yt-music-btn:hover{
+  box-shadow:0 0 20px rgba(255,0,0,0.3);
+  border-color:rgba(255,0,0,0.5);
+}
+
+.yt-music-logo{
+  display:block;
+}
+
+.yt-browser-wrap{
+  border-radius:14px;
+  border:1px solid rgba(255,0,0,0.18);
+  overflow:hidden;
+  background:#000;
+}
+
+.yt-browser-frame{
+  width:100%;
+  height:500px;
+  border:none;
+  background:#000;
+}
+
+/* YT Login Modal */
+
+.yt-login-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.85);
+  backdrop-filter:blur(8px);
+  z-index:300;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.3s ease;
+}
+
+.yt-login-overlay.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.yt-login-modal{
+  width:100%;
+  max-width:380px;
+  background:#111;
+  border:1px solid rgba(255,0,0,0.3);
+  border-radius:22px;
+  padding:28px 22px;
+  text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,0.7), 0 0 40px rgba(255,0,0,0.1);
+  transform:scale(0.9);
+  transition:transform 0.3s ease;
+}
+
+.yt-login-overlay.active .yt-login-modal{
+  transform:scale(1);
+}
+
+.yt-login-modal h2{
+  font-size:1.5rem;
+  margin-bottom:6px;
+}
+
+.yt-login-modal p{
+  color:#999;
+  margin-bottom:6px;
+}
+
+/* YT Error Intrus */
+
+.yt-error-overlay{
+  position:fixed;
+  inset:0;
+  background:#000;
+  z-index:400;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.2s ease;
+}
+
+.yt-error-overlay.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.yt-error-content{
+  text-align:center;
+  padding:30px;
+  max-width:600px;
+}
+
+.yt-error-skull{
+  font-size:8rem;
+  line-height:1;
+  animation:shake 0.3s ease infinite;
+  text-shadow:0 0 40px rgba(255,0,0,0.8);
+}
+
+.yt-error-title{
+  font-size:clamp(3rem,10vw,6rem);
+  font-weight:900;
+  color:#ff0000;
+  text-shadow:0 0 30px rgba(255,0,0,0.7), 0 0 60px rgba(255,0,0,0.4);
+  letter-spacing:0.1em;
+  margin:20px 0;
+  animation:errorFlicker 0.15s infinite;
+}
+
+.yt-error-code{
+  font-family:monospace;
+  font-size:1rem;
+  color:#ff3333;
+  text-shadow:0 0 10px rgba(255,0,0,0.5);
+  margin-bottom:20px;
+  line-height:1.8;
+}
+
+.yt-error-msg{
+  font-size:clamp(1.2rem,4vw,2rem);
+  font-weight:800;
+  color:#ff2222;
+  text-shadow:0 0 20px rgba(255,0,0,0.6);
+  margin-bottom:10px;
+  animation:errorFlicker 0.2s infinite 0.05s;
+}
+
+.yt-error-msg2{
+  font-size:clamp(1rem,3vw,1.5rem);
+  font-weight:700;
+  color:#cc0000;
+  text-shadow:0 0 15px rgba(255,0,0,0.4);
+  margin-bottom:8px;
+}
+
+.yt-error-msg3{
+  font-size:clamp(0.9rem,2.5vw,1.2rem);
+  font-weight:700;
+  color:#aa0000;
+  text-shadow:0 0 10px rgba(255,0,0,0.3);
+  margin-bottom:20px;
+}
+
+.yt-error-binary{
+  font-family:monospace;
+  font-size:0.7rem;
+  color:rgba(255,0,0,0.3);
+  line-height:1.4;
+  word-break:break-all;
+  max-height:120px;
+  overflow:hidden;
+}
+
+@keyframes errorFlicker{
+  0%,100%{ opacity:1; }
+  50%{ opacity:0.7; }
+}
+
 /* === SECURITE / MODAL === */
 
 .security-modal-overlay{

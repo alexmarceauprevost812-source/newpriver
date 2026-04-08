@@ -500,6 +500,101 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(drawMatrix, 40);
 
   // =====================
+  // YOUTUBE MUSIC (PRIVE)
+  // =====================
+
+  const ytMusicBtn = document.getElementById("ytMusicBtn");
+  const ytLoginOverlay = document.getElementById("ytLoginOverlay");
+  const ytLoginForm = document.getElementById("ytLoginForm");
+  const ytUsername = document.getElementById("ytUsername");
+  const ytPassword = document.getElementById("ytPassword");
+  const ytLoginClose = document.getElementById("ytLoginClose");
+  const ytErrorOverlay = document.getElementById("ytErrorOverlay");
+  const ytErrorCode = document.getElementById("ytErrorCode");
+  const ytErrorBinary = document.getElementById("ytErrorBinary");
+  const ytMusicFrame = document.getElementById("ytMusicFrame");
+
+  const YT_USER = "alexmarceauprevost";
+  const YT_PASS = "6718217";
+  let ytUnlocked = false;
+
+  if (ytMusicBtn) {
+    ytMusicBtn.addEventListener("click", () => {
+      if (ytUnlocked) {
+        showScreen("ytMusicScreen");
+        if (ytMusicFrame && ytMusicFrame.src === "about:blank") {
+          ytMusicFrame.src = "https://music.youtube.com";
+        }
+      } else {
+        if (ytLoginOverlay) ytLoginOverlay.classList.add("active");
+        if (ytUsername) { ytUsername.value = ""; ytUsername.focus(); }
+        if (ytPassword) ytPassword.value = "";
+      }
+    });
+  }
+
+  if (ytLoginClose) {
+    ytLoginClose.addEventListener("click", () => {
+      if (ytLoginOverlay) ytLoginOverlay.classList.remove("active");
+    });
+  }
+
+  if (ytLoginForm) {
+    ytLoginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const user = ytUsername ? ytUsername.value.trim() : "";
+      const pass = ytPassword ? ytPassword.value.trim() : "";
+
+      if (user === YT_USER && pass === YT_PASS) {
+        ytUnlocked = true;
+        if (ytLoginOverlay) ytLoginOverlay.classList.remove("active");
+        showScreen("ytMusicScreen");
+        if (ytMusicFrame) ytMusicFrame.src = "https://music.youtube.com";
+      } else {
+        if (ytLoginOverlay) ytLoginOverlay.classList.remove("active");
+        showYtError();
+      }
+    });
+  }
+
+  function showYtError() {
+    if (!ytErrorOverlay) return;
+
+    const errorCodes = [
+      "ERR_ACCESS_DENIED_0x8F2A",
+      "FATAL_AUTH_FAILURE_0xDEAD",
+      "SEC_VIOLATION_0x6661",
+      "INTRUDER_DETECTED_0xFF00",
+      "LOCK_PROTOCOL_0xBAAD",
+      "BREACH_ATTEMPT_0x0403"
+    ];
+
+    if (ytErrorCode) {
+      ytErrorCode.innerHTML = "";
+      errorCodes.forEach((code) => {
+        ytErrorCode.innerHTML += "[ " + code + " ]<br>";
+      });
+    }
+
+    if (ytErrorBinary) {
+      let binary = "";
+      for (let i = 0; i < 500; i++) {
+        binary += Math.random() > 0.5 ? "1" : "0";
+        if (i % 60 === 59) binary += " ";
+      }
+      ytErrorBinary.textContent = binary;
+    }
+
+    ytErrorOverlay.classList.add("active");
+
+    setTimeout(() => {
+      ytErrorOverlay.classList.remove("active");
+      showScreen("homeScreen");
+    }, 5000);
+  }
+
+  // =====================
   // SYSTEME DE SECURITE
   // =====================
 

@@ -10,6 +10,37 @@
 <body>
   <canvas id="matrixCanvas"></canvas>
 
+  <!-- YT MUSIC LOGIN -->
+  <div id="ytLoginOverlay" class="yt-login-overlay">
+    <div class="yt-login-modal">
+      <svg viewBox="0 0 24 24" width="64" height="64" style="margin-bottom:14px;">
+        <circle cx="12" cy="12" r="11" fill="#FF0000"/>
+        <polygon points="10,7.5 10,16.5 17,12" fill="#FFFFFF"/>
+      </svg>
+      <h2>YouTube Music</h2>
+      <p>Application privee. Identifie-toi.</p>
+      <form id="ytLoginForm" class="stack" style="margin-top:16px;">
+        <input id="ytUsername" type="text" placeholder="Nom utilisateur" autocomplete="off" />
+        <input id="ytPassword" type="password" placeholder="Mot de passe (chiffres)" maxlength="7" autocomplete="off" />
+        <button class="primary-btn" type="submit" style="background:linear-gradient(180deg,#ff2020,#cc0000);">Entrer</button>
+      </form>
+      <button id="ytLoginClose" class="text-btn" type="button" style="margin-top:12px;color:#ff4444;">Annuler</button>
+    </div>
+  </div>
+
+  <!-- YT ERREUR INTRUS -->
+  <div id="ytErrorOverlay" class="yt-error-overlay">
+    <div id="ytErrorContent" class="yt-error-content">
+      <div class="yt-error-skull">&#9760;</div>
+      <h1 class="yt-error-title">ERREUR ACCES</h1>
+      <div class="yt-error-code" id="ytErrorCode"></div>
+      <p class="yt-error-msg">ACCES REFUSE - UTILISATEUR NON AUTORISE</p>
+      <p class="yt-error-msg2">TENTATIVE DE CONNEXION ENREGISTREE</p>
+      <p class="yt-error-msg3">ADRESSE IP TRACEE</p>
+      <div class="yt-error-binary" id="ytErrorBinary"></div>
+    </div>
+  </div>
+
   <!-- MODAL SECURITE -->
   <div id="securityModal" class="security-modal-overlay">
     <div class="security-modal">
@@ -172,6 +203,12 @@
           </div>
 
           <div class="chat-header-right">
+            <button id="ytMusicBtn" class="yt-music-btn" type="button" title="YouTube Music">
+              <svg class="yt-music-logo" viewBox="0 0 24 24" width="28" height="28">
+                <circle cx="12" cy="12" r="11" fill="#FF0000"/>
+                <polygon points="10,7.5 10,16.5 17,12" fill="#FFFFFF"/>
+              </svg>
+            </button>
             <div id="clockDisplay" class="clock">
               <div class="clock-rain" id="clockRain"></div>
               <div class="clock-digits" id="clockDigits">
@@ -256,6 +293,30 @@
 
           <div class="panel-actions">
             <button class="secondary-btn" type="button" data-screen="chatScreen">Retour au chat</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- YOUTUBE MUSIC -->
+    <section id="ytMusicScreen" class="screen">
+      <div class="panel-screen">
+        <div class="card" style="max-width:650px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+            <svg viewBox="0 0 24 24" width="40" height="40">
+              <circle cx="12" cy="12" r="11" fill="#FF0000"/>
+              <polygon points="10,7.5 10,16.5 17,12" fill="#FFFFFF"/>
+            </svg>
+            <h2 style="font-size:1.6rem;">YouTube Music</h2>
+            <div class="lock-badge" style="margin-top:0;margin-left:auto;">&#128274; Alex seulement</div>
+          </div>
+
+          <div class="yt-browser-wrap">
+            <iframe id="ytMusicFrame" class="yt-browser-frame" src="about:blank" allow="autoplay; encrypted-media" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe>
+          </div>
+
+          <div class="panel-actions">
+            <button id="ytBackBtn" class="secondary-btn" type="button" data-screen="chatScreen">Retour au chat</button>
           </div>
         </div>
       </div>
