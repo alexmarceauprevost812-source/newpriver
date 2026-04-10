@@ -1,0 +1,23 @@
+{
+  "name": "newpriver",
+  "version": "1.0.0",
+  "description": "appplcasion priver",
+  "main": "app.js",
+  "scripts": {
+    "build": "mkdir -p www && cp index.html style.css app.js sw.js manifest.json www/ && cp -r icons www/",
+    "sync": "npm run build && npx cap sync android",
+    "open": "npx cap open android"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://local_proxy@127.0.0.1:37521/git/alexmarceauprevost812-source/newpriver"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@capacitor/android": "^8.3.0",
+    "@capacitor/cli": "^8.3.0",
+    "@capacitor/core": "^8.3.0"
+  }
+}

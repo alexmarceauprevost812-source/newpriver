@@ -1,3 +1,7 @@
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js").catch(() => {});
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const app = document.getElementById("app");
   const screens = document.querySelectorAll(".screen");
