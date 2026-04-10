@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let selectedTheme = localStorage.getItem("nr_theme") || "noir";
   let avatarData = localStorage.getItem("nr_avatar") || "";
   let geminiApiKey = localStorage.getItem("nr_gemini_key") || "";
+  let bgImageData = localStorage.getItem("nr_bg_image") || "";
   let chatHistory = [];
 
   // =====================
@@ -100,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
       matrixBurst = false;
       canvas.style.opacity = "0.38";
-    }, 5000);
+    }, 2500);
   }
 
   function closeMenu() {
@@ -540,9 +541,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (user === YT_USER && pass === YT_PASS) {
         ytUnlocked = true;
+        appleUnlocked = true;
         if (ytLoginOverlay) ytLoginOverlay.classList.remove("active");
-        showScreen("ytMusicScreen");
-        if (ytMusicFrame) ytMusicFrame.src = "https://music.youtube.com";
+
+        if (appleMusicBtn && appleMusicBtn._pendingOpen) {
+          appleMusicBtn._pendingOpen = false;
+          showScreen("appleMusicScreen");
+          if (appleMusicFrame) appleMusicFrame.src = "https://music.apple.com";
+        } else {
+          showScreen("ytMusicScreen");
+          if (ytMusicFrame) ytMusicFrame.src = "https://music.youtube.com";
+        }
       } else {
         if (ytLoginOverlay) ytLoginOverlay.classList.remove("active");
         showYtError();
@@ -584,6 +593,77 @@ document.addEventListener("DOMContentLoaded", () => {
       ytErrorOverlay.classList.remove("active");
       showScreen("homeScreen");
     }, 5000);
+  }
+
+  // =====================
+  // APPLE MUSIC (PRIVE - meme password que YT)
+  // =====================
+
+  const appleMusicBtn = document.getElementById("appleMusicBtn");
+  const appleMusicFrame = document.getElementById("appleMusicFrame");
+  let appleUnlocked = false;
+
+  if (appleMusicBtn) {
+    appleMusicBtn._pendingOpen = false;
+    appleMusicBtn.addEventListener("click", () => {
+      if (appleUnlocked) {
+        showScreen("appleMusicScreen");
+        if (appleMusicFrame && appleMusicFrame.src === "about:blank") {
+          appleMusicFrame.src = "https://music.apple.com";
+        }
+      } else {
+        appleMusicBtn._pendingOpen = true;
+        if (ytLoginOverlay) ytLoginOverlay.classList.add("active");
+        if (ytUsername) { ytUsername.value = ""; ytUsername.focus(); }
+        if (ytPassword) ytPassword.value = "";
+      }
+    });
+  }
+
+  // =====================
+  // FOND D'ECRAN PERSONNALISE
+  // =====================
+
+  const chatBgImage = document.getElementById("chatBgImage");
+  const bgUpload = document.getElementById("bgUpload");
+  const bgPreview = document.getElementById("bgPreview");
+  const bgRemoveBtn = document.getElementById("bgRemoveBtn");
+
+  function applyBgImage() {
+    if (chatBgImage && bgImageData) {
+      chatBgImage.style.backgroundImage = "url(" + bgImageData + ")";
+    } else if (chatBgImage) {
+      chatBgImage.style.backgroundImage = "";
+    }
+    if (bgPreview) {
+      if (bgImageData) {
+        bgPreview.innerHTML = '<img src="' + bgImageData + '" alt="Fond" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" />';
+      } else {
+        bgPreview.innerHTML = "Aucun";
+      }
+    }
+  }
+
+  if (bgUpload) {
+    bgUpload.addEventListener("change", (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        bgImageData = reader.result;
+        try { localStorage.setItem("nr_bg_image", bgImageData); } catch(err) { alert("Image trop grande pour le stockage local."); }
+        applyBgImage();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  if (bgRemoveBtn) {
+    bgRemoveBtn.addEventListener("click", () => {
+      bgImageData = "";
+      localStorage.removeItem("nr_bg_image");
+      applyBgImage();
+    });
   }
 
   // =====================
@@ -1049,6 +1129,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(updateClock, 1000);
   applyTheme(selectedTheme);
   setAvatarUI(avatarData);
+  applyBgImage();
   resetChat();
   startHomeAnimation();
   updateAiStatus();
